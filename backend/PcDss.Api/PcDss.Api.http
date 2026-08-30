@@ -1,0 +1,6 @@
+@PcDss.Api_HostAddress = http://localhost:5170
+
+GET {{PcDss.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
