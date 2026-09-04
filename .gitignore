@@ -480,3 +480,10 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# PC-DSS frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
