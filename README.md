@@ -7,12 +7,12 @@ Hệ hỗ trợ ra quyết định lựa chọn cấu hình máy tính cá nhân
 - Backend: ASP.NET Core Web API
 - Database: MySQL
 - ORM: Entity Framework Core
-- Frontend: ?
+- Frontend: React 18, Vite 6
 
 ## Trạng thái
 
 - Đã hoàn thành nền tảng backend và API CRUD Category.
-- Frontend đang được phát triển.
+- Đã tích hợp giao diện React và CRUD Category với Backend API.
 - Database linh kiện và thuật toán DSS chưa hoàn thành.
 
 ## Tài liệu
