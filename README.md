@@ -18,5 +18,7 @@ Hệ hỗ trợ ra quyết định lựa chọn cấu hình máy tính cá nhân
 ## Tài liệu
 
 - [Yêu cầu hệ thống](docs/requirements.md)
-- [Thiết kế database](docs/database-design.md)
+- [Hướng dẫn cài đặt database](database/README.md)
+- [Thiết kế database](docs/database-demo.md)
+- [Mẫu dữ liệu linh kiện](docs/data-collection-template.md)
 - [Thiết kế DSS](docs/dss-design.md)
