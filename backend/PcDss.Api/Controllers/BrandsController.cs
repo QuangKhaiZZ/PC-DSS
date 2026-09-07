@@ -1,50 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
-using PcDss.Api.DTOs.Categories;
+using PcDss.Api.DTOs.Brands;
 using PcDss.Api.Services.Interfaces;
 
 namespace PcDss.Api.Controllers;
 
 [ApiController]
-[Route("api/categories")]
-public class CategoriesController : ControllerBase
+[Route("api/brands")]
+public class BrandsController : ControllerBase
 {
-    private readonly ICategoryService _categoryService;
+    private readonly IBrandService _brandService;
 
-    public CategoriesController(ICategoryService categoryService)
+    public BrandsController(IBrandService brandService)
     {
-        _categoryService = categoryService;
+        _brandService = brandService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<CategoryResponse>>> GetAll(
+    public async Task<ActionResult<IReadOnlyList<BrandResponse>>> GetAll(
         CancellationToken cancellationToken)
     {
-        var categories = await _categoryService.GetAllAsync(cancellationToken);
-        return Ok(categories);
+        var brands = await _brandService.GetAllAsync(cancellationToken);
+        return Ok(brands);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CategoryResponse>> GetById(
+    public async Task<ActionResult<BrandResponse>> GetById(
         int id,
         CancellationToken cancellationToken)
     {
-        var category = await _categoryService.GetByIdAsync(
+        var brand = await _brandService.GetByIdAsync(
             id,
             cancellationToken);
 
-        if (category is null)
+        if (brand is null)
         {
-            return NotFound(new { message = "Không tìm thấy danh mục." });
+            return NotFound(new { message = "Không tìm thấy thương hiệu." });
         }
 
-        return Ok(category);
+        return Ok(brand);
     }
 
     [HttpPost]
-    public async Task<ActionResult<CategoryResponse>> Create(
-        CategoryRequest request,
+    public async Task<ActionResult<BrandResponse>> Create(
+        BrandRequest request,
         CancellationToken cancellationToken)
     {
         if (!TryNormalizeName(request))
@@ -52,35 +52,35 @@ public class CategoriesController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        if (await _categoryService.NameExistsAsync(
-            request.CategoryName,
+        if (await _brandService.NameExistsAsync(
+            request.BrandName,
             cancellationToken: cancellationToken))
         {
-            return Conflict(new { message = "Tên danh mục đã tồn tại." });
+            return Conflict(new { message = "Tên thương hiệu đã tồn tại." });
         }
 
         try
         {
-            var createdCategory = await _categoryService.CreateAsync(
+            var createdBrand = await _brandService.CreateAsync(
                 request,
                 cancellationToken);
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = createdCategory.CategoryId },
-                createdCategory);
+                new { id = createdBrand.BrandId },
+                createdBrand);
         }
         catch (DbUpdateException ex)
             when (ex.InnerException is MySqlException { Number: 1062 })
         {
-            return Conflict(new { message = "Tên danh mục đã tồn tại." });
+            return Conflict(new { message = "Tên thương hiệu đã tồn tại." });
         }
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<CategoryResponse>> Update(
+    public async Task<ActionResult<BrandResponse>> Update(
         int id,
-        CategoryRequest request,
+        BrandRequest request,
         CancellationToken cancellationToken)
     {
         if (!TryNormalizeName(request))
@@ -88,32 +88,32 @@ public class CategoriesController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        if (await _categoryService.GetByIdAsync(id, cancellationToken) is null)
+        if (await _brandService.GetByIdAsync(id, cancellationToken) is null)
         {
-            return NotFound(new { message = "Không tìm thấy danh mục." });
+            return NotFound(new { message = "Không tìm thấy thương hiệu." });
         }
 
-        if (await _categoryService.NameExistsAsync(
-            request.CategoryName,
+        if (await _brandService.NameExistsAsync(
+            request.BrandName,
             id,
             cancellationToken))
         {
-            return Conflict(new { message = "Tên danh mục đã tồn tại." });
+            return Conflict(new { message = "Tên thương hiệu đã tồn tại." });
         }
 
         try
         {
-            var updatedCategory = await _categoryService.UpdateAsync(
+            var updatedBrand = await _brandService.UpdateAsync(
                 id,
                 request,
                 cancellationToken);
 
-            if (updatedCategory is null)
+            if (updatedBrand is null)
             {
-                return NotFound(new { message = "Không tìm thấy danh mục." });
+                return NotFound(new { message = "Không tìm thấy thương hiệu." });
             }
 
-            return Ok(updatedCategory);
+            return Ok(updatedBrand);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -125,7 +125,7 @@ public class CategoriesController : ControllerBase
         catch (DbUpdateException ex)
             when (ex.InnerException is MySqlException { Number: 1062 })
         {
-            return Conflict(new { message = "Tên danh mục đã tồn tại." });
+            return Conflict(new { message = "Tên thương hiệu đã tồn tại." });
         }
     }
 
@@ -136,13 +136,13 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            var deleted = await _categoryService.DeleteAsync(
+            var deleted = await _brandService.DeleteAsync(
                 id,
                 cancellationToken);
 
             if (!deleted)
             {
-                return NotFound(new { message = "Không tìm thấy danh mục." });
+                return NotFound(new { message = "Không tìm thấy thương hiệu." });
             }
 
             return NoContent();
@@ -159,23 +159,23 @@ public class CategoriesController : ControllerBase
         {
             return Conflict(new
             {
-                message = "Không thể xóa danh mục đang có sản phẩm sử dụng."
+                message = "Không thể xóa thương hiệu đang có sản phẩm sử dụng."
             });
         }
     }
 
-    private bool TryNormalizeName(CategoryRequest request)
+    private bool TryNormalizeName(BrandRequest request)
     {
-        request.CategoryName = request.CategoryName.Trim();
+        request.BrandName = request.BrandName.Trim();
 
-        if (!string.IsNullOrWhiteSpace(request.CategoryName))
+        if (!string.IsNullOrWhiteSpace(request.BrandName))
         {
             return true;
         }
 
         ModelState.AddModelError(
-            nameof(request.CategoryName),
-            "Tên danh mục không được để trống.");
+            nameof(request.BrandName),
+            "Tên thương hiệu không được để trống.");
         return false;
     }
 }

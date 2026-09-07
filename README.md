@@ -11,7 +11,7 @@ Hệ hỗ trợ ra quyết định lựa chọn cấu hình máy tính cá nhân
 
 ## Trạng thái
 
-- Đã hoàn thành nền tảng backend và API CRUD Category.
+- Đã có nền tảng backend và API CRUD Category, Brand, Product.
 - Đã tích hợp giao diện React và CRUD Category với Backend API.
 - Database linh kiện và thuật toán DSS chưa hoàn thành.
 
@@ -22,3 +22,4 @@ Hệ hỗ trợ ra quyết định lựa chọn cấu hình máy tính cá nhân
 - [Thiết kế database](docs/database-demo.md)
 - [Mẫu dữ liệu linh kiện](docs/data-collection-template.md)
 - [Thiết kế DSS](docs/dss-design.md)
+- [Kiểm thử API Category, Brand, Product](backend/tests/README.md)

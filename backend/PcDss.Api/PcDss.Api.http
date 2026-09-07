@@ -1,33 +1,69 @@
-@PcDss.Api_HostAddress = http://localhost:5170
+@host = http://localhost:5170
 
-GET {{PcDss.Api_HostAddress}}/api/categories
-Accept: application/json
+# REST Client: chạy từng request từ trên xuống, POST mỗi bản ghi một lần.
+# ID trong GET/PUT/DELETE tự lấy từ response của POST được đặt tên.
+# Xóa bản ghi thử trước khi chạy lại POST; không sửa/xóa danh mục seed.
 
-###
+### Xem danh sách danh mục
+GET {{host}}/api/categories
 
-GET {{PcDss.Api_HostAddress}}/api/categories/1
-Accept: application/json
-
-###
-
-POST {{PcDss.Api_HostAddress}}/api/categories
+### Tạo danh mục thử — mong đợi 201
+# @name createTestCategory
+POST {{host}}/api/categories
 Content-Type: application/json
 
 {
-  "categoryName": "CPU"
+  "categoryName": "TEST-CATEGORY-{{$guid}}"
 }
 
-###
+### Đọc danh mục vừa tạo — mong đợi 200
+GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
 
-PUT {{PcDss.Api_HostAddress}}/api/categories/1
+### Sửa đúng danh mục thử — mong đợi 200
+PUT {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
 Content-Type: application/json
 
 {
-  "categoryName": "Processor"
+  "categoryName": "TEST-CATEGORY-UPDATED-{{$guid}}"
 }
 
-###
+### Đọc lại tên vừa sửa
+GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
 
-DELETE {{PcDss.Api_HostAddress}}/api/categories/1
+### Xóa danh mục thử — mong đợi 204
+DELETE {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
 
-###
+### Xác nhận đã xóa — mong đợi 404
+GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
+
+### Xem danh sách thương hiệu
+GET {{host}}/api/brands
+
+### Tạo thương hiệu thử — mong đợi 201
+# @name createTestBrand
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "TEST-BRAND-{{$guid}}"
+}
+
+### Đọc thương hiệu vừa tạo — mong đợi 200
+GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+
+### Sửa đúng thương hiệu thử — mong đợi 200
+PUT {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+Content-Type: application/json
+
+{
+  "name": "TEST-BRAND-UPDATED-{{$guid}}"
+}
+
+### Đọc lại tên vừa sửa
+GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+
+### Xóa thương hiệu thử — mong đợi 204
+DELETE {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+
+### Xác nhận đã xóa — mong đợi 404
+GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
