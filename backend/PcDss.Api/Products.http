@@ -1,0 +1,86 @@
+@host = http://localhost:5170
+
+# REST Client: chạy từng request từ trên xuống, POST mỗi bản ghi một lần.
+# Tạo Category/Brand riêng cho bài thử; ID tự lấy từ các response POST.
+# Các URL example.invalid và giá dưới đây là dữ liệu giả lập.
+# Cuối bài xóa Product trước, rồi xóa Category/Brand thử.
+
+### 1. Xem danh sách sản phẩm
+GET {{host}}/api/products
+
+### 2. Tạo danh mục riêng cho bài thử — 201
+# @name createProductCategory
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{
+  "categoryName": "TEST-PRODUCT-CATEGORY-{{$guid}}"
+}
+
+### 3. Tạo thương hiệu riêng cho bài thử — 201
+# @name createProductBrand
+POST {{host}}/api/brands
+Content-Type: application/json
+
+{
+  "name": "TEST-PRODUCT-BRAND-{{$guid}}"
+}
+
+### 4. Thêm sản phẩm thử — 201, isActive = false
+# @name createTestProduct
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+  "productCode": "TEST-PRODUCT-{{$guid}}",
+  "productName": "San pham thu nghiem",
+  "categoryId": {{createProductCategory.response.body.$.categoryId}},
+  "brandId": {{createProductBrand.response.body.$.brandId}},
+  "price": 1000000,
+  "priceSourceUrl": "https://example.invalid/test-price",
+  "priceCheckedAt": "2026-09-07",
+  "specSourceUrl": "https://example.invalid/test-spec",
+  "description": "Du lieu gia lap de thu API, se xoa sau khi thu.",
+  "image": null
+}
+
+### 5. Đọc sản phẩm vừa tạo — 200
+GET {{host}}/api/products/{{createTestProduct.response.body.$.productId}}
+
+### 6. Sửa tên và giá sản phẩm — 200
+PUT {{host}}/api/products/{{createTestProduct.response.body.$.productId}}
+Content-Type: application/json
+
+{
+  "productCode": "{{createTestProduct.response.body.$.productCode}}",
+  "productName": "San pham da sua",
+  "categoryId": {{createProductCategory.response.body.$.categoryId}},
+  "brandId": {{createProductBrand.response.body.$.brandId}},
+  "price": 1200000,
+  "priceSourceUrl": "https://example.invalid/test-price",
+  "priceCheckedAt": "2026-09-07",
+  "specSourceUrl": "https://example.invalid/test-spec",
+  "description": "Du lieu gia lap sau khi sua.",
+  "image": null
+}
+
+### 7. Đọc lại tên và giá mới — 200
+GET {{host}}/api/products/{{createTestProduct.response.body.$.productId}}
+
+### 8. Thử xóa danh mục đang được dùng — phải trả 409, dữ liệu còn nguyên
+DELETE {{host}}/api/categories/{{createProductCategory.response.body.$.categoryId}}
+
+### 9. Thử xóa thương hiệu đang được dùng — phải trả 409, dữ liệu còn nguyên
+DELETE {{host}}/api/brands/{{createProductBrand.response.body.$.brandId}}
+
+### 10. Xóa sản phẩm thử — 204
+DELETE {{host}}/api/products/{{createTestProduct.response.body.$.productId}}
+
+### 11. Xác nhận sản phẩm đã xóa — 404
+GET {{host}}/api/products/{{createTestProduct.response.body.$.productId}}
+
+### 12. Dọn danh mục thử sau khi sản phẩm đã xóa — 204
+DELETE {{host}}/api/categories/{{createProductCategory.response.body.$.categoryId}}
+
+### 13. Dọn thương hiệu thử — 204
+DELETE {{host}}/api/brands/{{createProductBrand.response.body.$.brandId}}
