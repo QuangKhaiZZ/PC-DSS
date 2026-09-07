@@ -39,7 +39,7 @@ export default function Categories() {
 
   return <div>
     <div className="page-title">
-      <div><span className="eyebrow">DATA MANAGEMENT</span><h2>Danh mục linh kiện</h2><p>Quản lý Categories từ Backend API.</p></div>
+      <div><h2>Danh mục linh kiện</h2><p>Quản lý Categories từ Backend API.</p></div>
       <div className="title-actions"><Button variant="secondary" onClick={load}><RefreshCw size={16}/> Làm mới</Button><Button onClick={()=>{setEditing(null);setName("");setOpen(true)}}><Plus size={17}/> Thêm danh mục</Button></div>
     </div>
     {error && <div className="error-banner">{error}</div>}

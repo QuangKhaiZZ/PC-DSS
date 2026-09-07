@@ -1,41 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, RefreshCw, Tags } from "lucide-react";
-import { getBrands, createBrand, updateBrand, deleteBrand } from "../services/brandService";
-import Button from "../components/Button";
-import Modal from "../components/Modal";
+import React, { useEffect, useState } from "react";//trang quan ly Brands
+import { Plus, Pencil, Trash2, RefreshCw, Tags } from "lucide-react";//import cac icon tu lucide-react
+import { getBrands, createBrand, updateBrand, deleteBrand } from "../services/brandService";//import cac ham tu brandService
+import Button from "../components/Button";//import Button tu component Button
+import Modal from "../components/Modal";//import Modal tu component Modal
 
-export default function Brands() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState(null);
-  const [name, setName] = useState("");
+export default function Brands() {//trang quan ly Brands
+  const [items, setItems] = useState([]);//state luu danh sach Brands
+  const [loading, setLoading] = useState(true);//state luu trang thai dang tai du lieu
+  const [error, setError] = useState("");//state luu thong bao loi
+  const [open, setOpen] = useState(false);//state luu trang thai cua modal
+  const [editing, setEditing] = useState(null); //state luu thong tin cua Brand dang chinh sua
+  const [name, setName] = useState("");//state luu ten cua Brand dang chinh sua
 
-  const load = async () => {
-    setLoading(true); setError("");
-    try { setItems(await getBrands() || []); }
-    catch { setError("Không thể kết nối Backend API. Hãy kiểm tra http://localhost:5170."); }
-    finally { setLoading(false); }
+  const load = async () => {//ham load du lieu tu backend
+    setLoading(true); setError("");// set trang thai dang tai du lieu va thong bao loi
+    try { setItems(await getBrands() || []); }//goi ham getBrands tu brandService va set danh sach Brands
+    catch { setError("Không thể kết nối Backend API. Hãy kiểm tra http://localhost:5170."); }//neu khong the ket noi backend thi set thong bao loi
+    finally { setLoading(false); }//set trang thai dang tai du lieu la false
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, []);//goi ham load khi component duoc render lan dau tien
 
-  const save = async e => {
-    e.preventDefault(); if (!name.trim()) return;
+  const save = async e => {//ham luu du lieu khi submit form
+    e.preventDefault(); if (!name.trim()) return;//neu ten rong thi return
     try {
-      if (editing) await updateBrand(editing.brandId ?? editing.id, { name });
-      else await createBrand({ name });
-      setOpen(false); setEditing(null); setName(""); load();
-    } catch { setError("Thao tác thất bại. Hãy kiểm tra DTO của API Brand."); }
+      if (editing) await updateBrand(editing.brandId ?? editing.id, { name });//neu dang chinh sua thi goi ham updateBrand tu brandService
+      else await createBrand({ name });//neu khong dang chinh sua thi goi ham createBrand tu brandService
+      setOpen(false); setEditing(null); setName(""); load();//set trang thai modal la false, set thong tin Brand dang chinh sua la null, set ten rong va load lai danh sach Brands
+    } catch { setError("Thao tác thất bại. Hãy kiểm tra DTO của API Brand."); }//neu khong thanh cong thi set thong bao loi
   };
 
-  const edit = item => { setEditing(item); setName(item.name || item.brandName || ""); setOpen(true); };
-  const remove = async id => { if (!confirm("Bạn có chắc muốn xóa thương hiệu này?")) return; try { await deleteBrand(id); load(); } catch { setError("Không thể xóa thương hiệu."); } };
+  const edit = item => { setEditing(item); setName(item.name || item.brandName || ""); setOpen(true); };//ham chinh sua Brand, set thong tin Brand dang chinh sua va set ten cua Brand vao input, set trang thai modal la true
+  const remove = async id => { if (!confirm("Bạn có chắc muốn xóa thương hiệu này?")) return; try { await deleteBrand(id); load(); } catch { setError("Không thể xóa thương hiệu."); } };//ham xoa Brand, hoi nguoi dung co chac muon xoa hay khong, neu co thi goi ham deleteBrand tu brandService va load lai danh sach Brands, neu khong thanh cong thi set thong bao loi
 
   return <div>
     <div className="page-title">
-      <div><span className="eyebrow">DATA MANAGEMENT</span><h2>Thương hiệu</h2><p>Quản lý Brands của hệ thống.</p></div>
-      <div className="title-actions"><Button variant="secondary" onClick={load}><RefreshCw size={16}/> Làm mới</Button><Button onClick={()=>{setEditing(null);setName("");setOpen(true)}}><Plus size={17}/> Thêm thương hiệu</Button></div>
+      <div>
+        <h2>Thương hiệu</h2>
+        <p>Quản lý Brands của hệ thống</p>
+      </div>
+      <div className="title-actions">
+        <Button variant="secondary" onClick={load}><RefreshCw size={16}/> Làm mới</Button><Button onClick={()=>{setEditing(null);setName("");setOpen(true)}}><Plus size={17}/> Thêm thương hiệu</Button></div>
     </div>
     {error && <div className="error-banner">{error}</div>}
     <div className="table-card">

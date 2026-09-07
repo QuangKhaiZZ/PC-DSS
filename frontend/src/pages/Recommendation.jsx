@@ -29,7 +29,7 @@ export default function Recommendation() {
   return (
     <div>
       <div className="page-title">
-        <div><span className="eyebrow">DSS RECOMMENDATION</span><h2>Tư vấn cấu hình PC</h2><p>Nhập nhu cầu để hệ thống đưa ra cấu hình phù hợp.</p></div>
+        <div><h2>Tư vấn cấu hình PC</h2><p>Nhập nhu cầu để hệ thống đưa ra cấu hình phù hợp.</p></div>
         <Link to="/" className="btn btn-secondary"><ArrowLeft size={17}/> Trang chủ</Link>
       </div>
 

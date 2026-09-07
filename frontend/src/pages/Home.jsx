@@ -23,7 +23,6 @@ export default function Home() {
     <div>
       <section className="hero">
         <div className="hero-copy">
-          <div className="eyebrow"><BrainCircuit size={16}/> DECISION SUPPORT SYSTEM</div>
           <h2>Tìm cấu hình PC<br/><span>phù hợp với bạn.</span></h2>
           <p>
             Hệ thống hỗ trợ lựa chọn cấu hình máy tính dựa trên nhu cầu sử dụng,
@@ -35,10 +34,10 @@ export default function Home() {
         </div>
         <div className="hero-card">
           <div className="pc-visual"><Cpu size={76}/></div>
-          <div className="score-badge">DSS SCORE <strong>94%</strong></div>
+          <div className="score-badge">DSS SCORE</div>
           <div className="hero-specs">
-            <span>Gaming / Workstation</span>
-            <span>Balanced configuration</span>
+            <span>Chơi game / Văn phòng</span>
+            <span>Cấu hình cân bằng</span>
           </div>
         </div>
       </section>
