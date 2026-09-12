@@ -27,7 +27,7 @@ Hệ thống cần:
 - Tạo các cấu hình PC từ dữ liệu linh kiện có sẵn.
 - Loại bỏ các cấu hình không tương thích.
 - Loại bỏ các cấu hình vượt quá ngân sách.
-- Chấm điểm cấu hình theo nhu cầu sử dụng.
+- Dự đoán điểm hiệu năng cấu hình theo nhu cầu bằng hồi quy tuyến tính đa biến.
 - Xếp hạng và đề xuất tối đa ba cấu hình.
 - Hiển thị lý do đề xuất để người dùng tham khảo.
 
@@ -43,7 +43,7 @@ Người dùng có thể:
 - Nhập ngân sách tối đa.
 - Yêu cầu hệ thống đề xuất cấu hình.
 - Xem danh sách cấu hình được đề xuất.
-- Xem tổng giá và điểm phù hợp.
+- Xem tổng giá, điểm hiệu năng dự đoán và bài đo tương ứng.
 - Xem lý do cấu hình được đề xuất.
 
 ### 4.2. Người quản lý dữ liệu
@@ -78,13 +78,17 @@ Phiên bản đầu hỗ trợ ba nhu cầu:
 - Chơi game.
 - Thiết kế đồ họa cơ bản.
 
-Mỗi nhu cầu có mức độ ưu tiên linh kiện khác nhau.
+Nhu cầu xác định mô hình và loại điểm hiệu năng cần dự đoán. Tên nhu cầu trên giao diện có thể dùng cách gọi chung; kết quả phải giải thích phạm vi bài đo đại diện, không khẳng định phù hợp với mọi phần mềm hoặc tác vụ.
 
-Ví dụ:
+Các đầu ra đang được xem xét:
 
-- Chơi game ưu tiên GPU và CPU.
-- Văn phòng ưu tiên CPU, RAM và chi phí hợp lý.
-- Thiết kế đồ họa ưu tiên GPU, CPU và RAM.
+| Nhu cầu | Đầu ra dự kiến | Trạng thái |
+|---|---|---|
+| Văn phòng và học tập | Điểm Productivity của PCMark 10. | Hướng đã đề xuất; cần xác minh phiên bản và dữ liệu trước khi chốt. |
+| Chơi game | Điểm tổng Time Spy chế độ chuẩn. | Hướng đã đề xuất; cần xác minh phiên bản và dữ liệu trước khi chốt. |
+| Thiết kế đồ họa cơ bản | Khảo sát Digital Content Creation của PCMark 10 hoặc một bài đo ứng dụng như Puget Bench for Photoshop. | Chưa chốt bài đo; không gộp điểm các bài đo này thành một nhãn. |
+
+Phạm vi sản phẩm giữ đủ ba nhu cầu. Có thể triển khai thử từng mô hình theo thứ tự; việc chạy được một nhu cầu chưa có nghĩa đã hoàn thành toàn bộ hệ thống. Time Spy không được diễn giải trực tiếp thành FPS; Productivity chỉ phản ánh nhóm tác vụ của bài đo, không bao quát mọi hoạt động học tập.
 
 ## 6. Dữ liệu linh kiện
 
@@ -97,6 +101,7 @@ Hệ thống dự kiến quản lý các nhóm linh kiện:
 - Ổ lưu trữ.
 - PSU.
 - Case.
+- Tản nhiệt (Cooler).
 
 Mỗi linh kiện có các thông tin cơ bản:
 
@@ -105,13 +110,15 @@ Mỗi linh kiện có các thông tin cơ bản:
 - Danh mục.
 - Thương hiệu.
 - Giá.
-- Điểm hiệu năng.
+- Điểm benchmark tham chiếu cho CPU/GPU, kèm loại điểm, bài đo, phiên bản và nguồn.
 - Một số thông số dùng để kiểm tra tương thích.
 - Trạng thái đang được sử dụng trong hệ thống.
 
 Dữ liệu được nhập thủ công để phục vụ bài tập lớn.
 
 Hệ thống không yêu cầu tự động thu thập dữ liệu từ website hoặc cập nhật giá theo thời gian thực.
+
+Dữ liệu linh kiện dùng để tạo cấu hình, tính giá và kiểm tra tương thích. Dữ liệu huấn luyện được thu thập riêng theo mục 12; không phải mọi thông số linh kiện đều là đầu vào hồi quy. Phạm vi thu thập ban đầu là máy tính để bàn, không trộn linh kiện hoặc lượt đo laptop vào cùng tập mà chưa kiểm chứng.
 
 ## 7. Quy tắc tương thích cơ bản
 
@@ -149,15 +156,25 @@ Hệ thống thực hiện theo các bước:
 3. Tạo các phương án cấu hình.
 4. Loại bỏ phương án vượt ngân sách.
 5. Loại bỏ phương án không tương thích.
-6. Tính điểm phù hợp của từng phương án.
-7. Sắp xếp phương án theo điểm.
+6. Ghép các đặc trưng đầu vào và dự đoán điểm hiệu năng bằng mô hình của nhu cầu đã chọn.
+7. Sắp xếp phương án hợp lệ theo điểm dự đoán giảm dần.
 8. Trả về tối đa ba cấu hình tốt nhất.
 
-Hệ thống sử dụng phương pháp chấm điểm có trọng số.
+### 8.1. Vai trò của hồi quy
 
-Mỗi mục đích sử dụng có trọng số khác nhau. Các trọng số cụ thể sẽ được mô tả trong tài liệu thiết kế DSS.
+Thuật toán chính là hồi quy tuyến tính đa biến, thuộc học máy có giám sát. Mô hình học các hệ số từ cấu hình có điểm đo thực tế để dự đoán điểm của cấu hình chưa được đo. Hệ số không phải trọng số do nhóm tự gán.
 
-Hệ thống không sử dụng Machine Learning trong phiên bản đầu.
+Mỗi đầu ra được chốt sẽ có mô hình riêng. Không cộng trực tiếp điểm gaming, văn phòng và đồ họa vì chúng có thang đo và ý nghĩa khác nhau. Giá dùng để kiểm tra ngân sách; quy tắc phần cứng dùng để kiểm tra tương thích.
+
+Các đầu vào ứng viên gồm điểm CPU đơn nhân/đơn luồng, điểm CPU đa nhân/đa luồng, điểm GPU tham chiếu độc lập, dung lượng và thông tin RAM. Chỉ dùng đúng loại điểm được nguồn định nghĩa; không tự coi các bài đo khác nhau là tương đương. Thông tin lưu trữ có thể được xem xét khi có dữ liệu phù hợp.
+
+Danh sách này chưa phải bộ đầu vào bắt buộc cho cả ba mô hình. Trước khi thu thập số lượng lớn, nhóm phải ghi rõ cho từng mô hình: đầu ra, bài đo/nhóm phiên bản so sánh được, đầu vào, nguồn tham chiếu và quy tắc nhận mẫu. Mọi đầu vào phải có thể biết khi tư vấn cấu hình mới.
+
+### 8.2. Trường hợp chưa đủ dữ liệu
+
+Nếu chưa có mô hình được kiểm chứng cho nhu cầu, hoặc cấu hình thiếu đầu vào cần thiết/nằm ngoài phạm vi áp dụng đã xác định, hệ thống phải thông báo chưa đủ cơ sở dự đoán. Không tự tạo điểm hoặc âm thầm chuyển sang mô hình của nhu cầu khác.
+
+Nếu có ít hơn ba cấu hình hợp lệ thì trả số lượng thực có; nếu không có thì giải thích lý do.
 
 ## 9. Kết quả đầu ra
 
@@ -166,13 +183,15 @@ Mỗi cấu hình được đề xuất cần hiển thị:
 - Danh sách linh kiện.
 - Giá của từng linh kiện.
 - Tổng giá cấu hình.
-- Điểm phù hợp.
+- Điểm hiệu năng dự đoán, tên bài đo và loại điểm.
 - Mục đích sử dụng.
 - Lý do đề xuất.
 
 Ví dụ lý do:
 
-> Cấu hình phù hợp cho nhu cầu chơi game vì có GPU tốt, CPU đủ mạnh, các linh kiện tương thích và tổng giá không vượt quá ngân sách.
+> Cấu hình được đề xuất vì các linh kiện đáp ứng những quy tắc tương thích đã kiểm tra, tổng giá nằm trong ngân sách và có điểm Time Spy dự đoán cao trong các phương án đã xét.
+
+Điểm benchmark không phải phần trăm phù hợp hoặc cam kết hiệu năng trong mọi ứng dụng. Kết quả cần nêu ngắn gọn phạm vi của bài đo đại diện.
 
 ## 10. Yêu cầu chức năng
 
@@ -182,13 +201,14 @@ Ví dụ lý do:
 - FR-04: Hệ thống tạo các phương án cấu hình.
 - FR-05: Hệ thống kiểm tra ngân sách.
 - FR-06: Hệ thống kiểm tra tương thích cơ bản.
-- FR-07: Hệ thống tính điểm phù hợp.
+- FR-07: Hệ thống dự đoán điểm hiệu năng bằng mô hình hồi quy của nhu cầu được chọn.
 - FR-08: Hệ thống xếp hạng cấu hình.
 - FR-09: Hệ thống trả về tối đa ba cấu hình.
 - FR-10: Hệ thống hiển thị lý do đề xuất.
 - FR-11: Hệ thống cho phép quản lý danh mục linh kiện.
 - FR-12: Hệ thống cho phép quản lý thương hiệu. 
 - FR-13: Hệ thống cho phép quản lý dữ liệu linh kiện.
+- FR-14: Hệ thống thông báo khi thiếu mô hình, dữ liệu hoặc cấu hình hợp lệ để tư vấn.
 
 ## 11. Yêu cầu phi chức năng
 
@@ -201,11 +221,34 @@ Ví dụ lý do:
 
 ## 12. Phạm vi dữ liệu
 
-Dữ liệu được chuẩn bị thủ công.
+Dữ liệu được chuẩn bị thủ công theo [mẫu thu thập](data-collection-template.md), gồm ba phần:
 
-Mỗi danh mục dự kiến có khoảng 5 đến 10 linh kiện. Tổng dữ liệu khoảng 35 đến 70 linh kiện là đủ để minh họa hoạt động của hệ thống.
+| Phần dữ liệu | Vai trò |
+|---|---|
+| Danh mục linh kiện, giá và thông số | Tạo bộ máy, kiểm tra tương thích và ngân sách. |
+| Benchmark tham chiếu theo model CPU/GPU | Cung cấp đặc trưng có thể tra cho cấu hình mới. |
+| Benchmark cấu hình thực tế | Cung cấp cấu hình và kết quả đo làm mẫu huấn luyện/đánh giá. |
 
-Giá linh kiện chỉ mang tính tham khảo và cần ghi thời điểm thu thập.
+Danh mục ban đầu dự kiến khoảng 5–10 sản phẩm mỗi nhóm, điều chỉnh theo các cấu hình cần minh họa. Số sản phẩm không phải số mẫu huấn luyện. Giá chỉ mang tính tham khảo, phải có nguồn và thời điểm thu thập.
+
+Một lượt đo có thể cung cấp nhiều loại điểm, nhưng các điểm đó thuộc cùng lượt đo và không tạo thành các máy độc lập. Không tự đặt điểm đầu ra bằng cách cộng điểm linh kiện.
+
+### 12.1. Thu thập thử và chốt dữ liệu
+
+- Ghép thử khoảng 5 mẫu đầy đủ cho mỗi nhu cầu để kiểm tra khả năng thu thập; đây không phải số mẫu đủ để kết luận độ chính xác.
+- Kiểm tra model/biến thể, đơn vị, nguồn, điều kiện đo và khả năng so sánh phiên bản. Giữ dữ liệu gốc và lý do nhận, tạm giữ hoặc loại mẫu.
+- Nhận diện đo lặp/cùng máy; không xem mọi mã lượt đo khác nhau là các cấu hình độc lập.
+- Chỉ thu thập mở rộng sau khi thống nhất đầu ra và mẫu dữ liệu. Số mẫu chính thức phụ thuộc số đầu vào, độ đa dạng và kết quả đánh giá, không có một số lượng cố định bảo đảm mô hình tốt.
+- Lưu phiên bản bộ dữ liệu, bảng tham chiếu và danh sách chia tập để tái hiện kết quả. Các trường chưa biết phải được ghi rõ, không thay bằng 0.
+
+### 12.2. Huấn luyện và đánh giá
+
+- Chia dữ liệu theo nhóm máy/cấu hình phù hợp với mục tiêu dự đoán; các lượt cùng nhóm không được xuất hiện ở cả phần học và phần đánh giá.
+- Chỉ học phép chuẩn hóa, điền thiếu và lựa chọn biến trên dữ liệu huấn luyện; giữ tập kiểm tra cuối cùng ngoài quá trình điều chỉnh mô hình.
+- Không dùng điểm thành phần của chính lượt đo đầu ra làm đặc trưng, như Graphics/CPU Score của cùng lượt Time Spy hoặc Writing/Spreadsheets của cùng lượt Productivity.
+- Báo cáo MAE, RMSE và R² cho từng đầu ra; so sánh với mô hình luôn dự đoán trung bình của tập huấn luyện trên cùng dữ liệu đánh giá. R² không phải phần trăm dự đoán đúng.
+- Thống nhất tiêu chí sai số chấp nhận được trước khi đánh giá cuối cùng; lưu đầu vào, hệ số, cách tiền xử lý, phiên bản dữ liệu và phạm vi áp dụng của mỗi mô hình.
+- Kiểm tra ngân sách và tương thích riêng với đánh giá sai số hồi quy.
 
 ## 13. Ngoài phạm vi phiên bản đầu
 
@@ -217,7 +260,6 @@ Phiên bản đầu không yêu cầu:
 - Theo dõi đơn hàng.
 - Thu thập giá tự động.
 - Cập nhật giá theo thời gian thực.
-- Machine Learning.
 - Lưu lịch sử hành vi người dùng.
 - Kiểm tra toàn bộ quy tắc phần cứng nâng cao.
 - Triển khai hệ thống cho lượng người dùng lớn.
@@ -231,7 +273,10 @@ Bài tập được xem là hoàn thành khi:
 - Cấu hình không vượt quá ngân sách.
 - CPU, Mainboard và RAM tương thích.
 - PSU có công suất phù hợp.
-- Các cấu hình được xếp hạng theo điểm.
+- Cả ba nhu cầu có đầu ra, dữ liệu và mô hình được kiểm chứng trong phạm vi đã công bố.
+- Các cấu hình được xếp hạng theo điểm hiệu năng dự đoán của nhu cầu tương ứng.
+- Có báo cáo sai số và so sánh với dự đoán trung bình trên dữ liệu giữ ngoài huấn luyện; kết quả đáp ứng tiêu chí đã thống nhất.
+- Trường hợp thiếu dữ liệu/mô hình hoặc không có cấu hình hợp lệ được thông báo rõ.
 - Kết quả có giải thích ngắn gọn.
 - Frontend gọi được API backend.
 - Hệ thống chạy được với dữ liệu thử nghiệm.
