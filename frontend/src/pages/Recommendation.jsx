@@ -38,10 +38,13 @@ export default function Recommendation() {
           <div className="form-card">
             <div className="form-section">
               <h3>1. Nhu cầu sử dụng</h3>
-              <div className="option-grid">
-                {["Gaming", "Văn phòng", "Đồ họa", "Lập trình"].map(x =>
-                  <button key={x} className={form.purpose === x ? "option selected" : "option"} onClick={() => set("purpose", x)}>{x}</button>
-                )}
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <div className="option-grid" style={{ gridTemplateColumns: "repeat(2, 140px)", width: "fit-content" }}
+  >
+                  {["Gaming", "Văn phòng"].map(x =>
+                    <button key={x} className={form.purpose === x ? "option selected" : "option"} onClick={() => set("purpose", x)}>{x}</button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="form-section">
@@ -51,8 +54,6 @@ export default function Recommendation() {
               </select>
             </div>
             <div className="form-section two-cols">
-              <label>CPU<select value={form.cpu} onChange={e=>set("cpu",e.target.value)}><option>Ưu tiên hiệu năng</option><option>Cân bằng giá/hiệu năng</option><option>Tiết kiệm</option></select></label>
-              <label>GPU<select value={form.gpu} onChange={e=>set("gpu",e.target.value)}><option>Ưu tiên hiệu năng</option><option>Cân bằng giá/hiệu năng</option><option>Tiết kiệm</option></select></label>
               <label>RAM<select value={form.ram} onChange={e=>set("ram",e.target.value)}><option>16 GB</option><option>32 GB</option><option>64 GB</option></select></label>
               <label>Storage<select value={form.storage} onChange={e=>set("storage",e.target.value)}><option>500 GB SSD</option><option>1 TB SSD</option><option>2 TB SSD</option></select></label>
             </div>
