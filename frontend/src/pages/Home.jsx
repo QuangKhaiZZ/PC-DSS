@@ -14,8 +14,6 @@ import {
 const useCases = [
   { icon: Gamepad2, title: "Gaming", text: "Chơi game AAA, FPS và game online mượt mà." },
   { icon: BriefcaseBusiness, title: "Văn phòng", text: "Word, Excel, trình duyệt và tác vụ hằng ngày." },
-  { icon: Palette, title: "Đồ họa", text: "Photoshop, Illustrator, Premiere và thiết kế." },
-  { icon: Code2, title: "Lập trình", text: "IDE, Docker, máy ảo và phát triển phần mềm." },
 ];
 
 export default function Home() {
@@ -34,7 +32,6 @@ export default function Home() {
         </div>
         <div className="hero-card">
           <div className="pc-visual"><Cpu size={76}/></div>
-          <div className="score-badge">DSS SCORE</div>
           <div className="hero-specs">
             <span>Chơi game / Văn phòng</span>
             <span>Cấu hình cân bằng</span>
