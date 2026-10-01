@@ -1,0 +1,13 @@
+﻿PcId,ProductName,Store,PriceVnd,CpuModel,GpuModel,RamCapacityGb,SsdCapacityGb,Availability,SourceUrl,CheckedAt
+PC-016,PC Gaming KTH PLUS i3-12 RTX3050,Kênh Tin Học,9950000,Intel Core i3-12100F,GeForce RTX 3050 8GB,8,240,IN_STOCK,https://kenhtinhoc.vn/pc-gaming-kth-plus-i3-12-rtx3050/,2026-10-01
+PC-021,PC WHITE i3-12100F RTX 3060 12GB,PCMarket,14790000,Intel Core i3-12100F,GeForce RTX 3060 12GB,16,500,UNKNOWN,https://pcmarket.vn/pc-white-gaming-rtx-3060-12gb-i3-12100f-all-new.html,2026-10-01
+PC-019,PC TTG Ryzen 5 5500 RTX 3050 8GB,TTG,15480000,AMD Ryzen 5 5500,GeForce RTX 3050 8GB,16,256,UNKNOWN,https://ttgshop.vn/pc-ttg-amd-ryzen-5-5500-rtx-3050-8gb,2026-10-01
+PC-011,PC ASUS i3-3050,Nguyễn Thuận,16180000,Intel Core i3-12100F,GeForce RTX 3050 6GB,16,256,IN_STOCK,https://thuancomputer.com/pc-asus-i3-3050-i3-12100f-rtx-3050-6gb-ram-16gb-ssd-256gb-550w/,2026-10-01
+PC-014,PC TTG i3-12100F RTX 3050 8GB,TTG,16280000,Intel Core i3-12100F,GeForce RTX 3050 8GB,16,256,UNKNOWN,https://ttgshop.vn/pc-ttg-gaming-i3-12100f-rtx-3050-8gb,2026-10-01
+PC-008,PC XG 3050 Core i3,XGEAR,17190000,Intel Core i3-12100F,GeForce RTX 3050 6GB,16,256,IN_STOCK,https://xgear.net/products/pc-xg-3050-core-i3,2026-10-01
+PC-027,PC Gaming Glacier i5060,TNC Store,19349000,Intel Core i3-12100F,GeForce RTX 5060,16,256,IN_STOCK,https://www.tncstore.vn/pc-gaming-glacier-i5060.html,2026-10-01
+PC-022,PC Gaming C.N 01,XGEAR,19990000,Intel Core i3-12100F,GeForce RTX 3060 12GB,16,256,IN_STOCK,https://xgear.net/products/pc-gaming-c-n-01,2026-10-01
+PC-024,PC Gaming GMN3203,PC79,24410000,Intel Core i3-12100F,GeForce RTX 3060 12GB,16,500,IN_STOCK,https://pc79.vn/san-pham/pc-gaming-gmn3203-i3-12100f-rtx-3060-ram-16g/,2026-10-01
+PC-028,PC MEGA GORIKY,MEGA,29870000,Intel Core i5-14400,GeForce RTX 5060,16,256,OUT_OF_STOCK,https://mega.com.vn/pc-mega-goriky,2026-10-01
+PC-029,AORUS PRIME 3 AP3A5N6-5104,Dương Long,43490000,AMD Ryzen 5 9500F,GeForce RTX 5060,16,1000,IN_STOCK,https://duonglong.vn/may-bo-gaming-gigabyte-aorus-prime-3-ap351-ap3a5n6-5104,2026-10-01
+PC-030,AORUS PRIME 3 AP3A5N6T-5103,GEARVN,55900000,AMD Ryzen 5 9500F,GeForce RTX 5060 Ti 16GB,32,1000,UNKNOWN,https://gvnco.myharavan.com/products/pc-gvn-ai-gigabyte-aorus-prime-3,2026-10-01

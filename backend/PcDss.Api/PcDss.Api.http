@@ -1,69 +1,43 @@
 @host = http://localhost:5170
 
-# REST Client: chạy từng request từ trên xuống, POST mỗi bản ghi một lần.
-# ID trong GET/PUT/DELETE tự lấy từ response của POST được đặt tên.
-# Xóa bản ghi thử trước khi chạy lại POST; không sửa/xóa danh mục seed.
+### Kiểm tra API
+GET {{host}}/health
 
-### Xem danh sách danh mục
-GET {{host}}/api/categories
+### Danh mục CSV
+GET {{host}}/api/pc-catalog
 
-### Tạo danh mục thử — mong đợi 201
-# @name createTestCategory
-POST {{host}}/api/categories
+### Chi tiết một bộ
+GET {{host}}/api/pc-catalog/PC-016
+
+### Dự đoán gaming
+GET {{host}}/api/pc-catalog/PC-016/prediction?purpose=Gaming
+
+### Render theo giả định Windows 11
+GET {{host}}/api/pc-catalog/PC-016/prediction?purpose=Rendering
+
+### RTX 3050 6GB: có cảnh báo ngoại suy
+GET {{host}}/api/pc-catalog/PC-008/prediction?purpose=Gaming
+
+### Tư vấn gaming 20 triệu
+POST {{host}}/api/recommendations
 Content-Type: application/json
 
-{
-  "categoryName": "TEST-CATEGORY-{{$guid}}"
-}
+{"budget":20000000,"purpose":"Gaming","topCount":3}
 
-### Đọc danh mục vừa tạo — mong đợi 200
-GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
-
-### Sửa đúng danh mục thử — mong đợi 200
-PUT {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
+### Tư vấn render 30 triệu
+POST {{host}}/api/recommendations
 Content-Type: application/json
 
-{
-  "categoryName": "TEST-CATEGORY-UPDATED-{{$guid}}"
-}
+{"budget":30000000,"purpose":"Rendering","topCount":3}
 
-### Đọc lại tên vừa sửa
-GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
-
-### Xóa danh mục thử — mong đợi 204
-DELETE {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
-
-### Xác nhận đã xóa — mong đợi 404
-GET {{host}}/api/categories/{{createTestCategory.response.body.$.categoryId}}
-
-### Xem danh sách thương hiệu
-GET {{host}}/api/brands
-
-### Tạo thương hiệu thử — mong đợi 201
-# @name createTestBrand
-POST {{host}}/api/brands
+### Không đủ ngân sách: 200, items rỗng
+POST {{host}}/api/recommendations
 Content-Type: application/json
 
-{
-  "name": "TEST-BRAND-{{$guid}}"
-}
+{"budget":1000000,"purpose":"Gaming"}
 
-### Đọc thương hiệu vừa tạo — mong đợi 200
-GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
-
-### Sửa đúng thương hiệu thử — mong đợi 200
-PUT {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+### Dữ liệu không hợp lệ: 400
+POST {{host}}/api/recommendations
 Content-Type: application/json
 
-{
-  "name": "TEST-BRAND-UPDATED-{{$guid}}"
-}
-
-### Đọc lại tên vừa sửa
-GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
-
-### Xóa thương hiệu thử — mong đợi 204
-DELETE {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
-
-### Xác nhận đã xóa — mong đợi 404
-GET {{host}}/api/brands/{{createTestBrand.response.body.$.brandId}}
+{"budget":-1,"purpose":"Office"}

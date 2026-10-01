@@ -1,0 +1,132 @@
+{
+  "model_version": "rendering-linear-v1-20261001T151656208296Z",
+  "created_at_utc": "2026-10-01T15:16:56.208296+00:00",
+  "model_type": "Multiple Linear Regression",
+  "algorithm": "sklearn.linear_model.LinearRegression",
+  "target": "PCMark 10 Rendering and Visualization Score",
+  "metric": "RENDER",
+  "fit_scope": "80 training rows only",
+  "training_row_count": 80,
+  "test_row_count": 20,
+  "split": {
+    "method": "train_test_split",
+    "train_size": 80,
+    "test_size": 20,
+    "shuffle": true,
+    "random_state": 42
+  },
+  "feature_order": [
+    "GpuScore",
+    "CpuMultiScore",
+    "IsIntel",
+    "GpuGeneration",
+    "IsUltra",
+    "IsWindows11"
+  ],
+  "feature_definitions": {
+    "GpuScore": "PassMark G3D Mark from ReferenceBenchmark",
+    "CpuMultiScore": "PassMark CPU Mark from ReferenceBenchmark",
+    "IsIntel": "Intel CPU = 1; other CPU = 0",
+    "GpuGeneration": "RTX 30xx=30, RTX 40xx=40, RTX 50xx=50",
+    "IsUltra": "Intel Core Ultra = 1; otherwise 0",
+    "IsWindows11": "Windows 11 = 1; Windows 10 = 0"
+  },
+  "formula": "RenderingScore = intercept + coefficients['GpuScore'] * GpuScore + coefficients['CpuMultiScore'] * CpuMultiScore + coefficients['IsIntel'] * IsIntel + coefficients['GpuGeneration'] * GpuGeneration + coefficients['IsUltra'] * IsUltra + coefficients['IsWindows11'] * IsWindows11",
+  "intercept": -5200.25235064912,
+  "coefficients": {
+    "GpuScore": 0.24116842922432638,
+    "CpuMultiScore": 0.13917976916354224,
+    "IsIntel": 2215.7052865756004,
+    "GpuGeneration": 175.93808072318305,
+    "IsUltra": 476.6756522192281,
+    "IsWindows11": 4587.054216920933
+  },
+  "normalization_rules": {
+    "cpu": {
+      "lowercase": true,
+      "remove_text_after_at_sign": true,
+      "remove_word": "processor",
+      "keep_only": "a-z0-9"
+    },
+    "gpu": {
+      "lowercase": true,
+      "remove_word": "nvidia",
+      "keep_only": "a-z0-9"
+    }
+  },
+  "feature_engineering": {
+    "IsIntel": "1 if CpuModel contains 'intel' ignoring case",
+    "IsUltra": "1 if CpuModel contains 'ultra' ignoring case",
+    "GpuGeneration": "regex rtx\\s*(\\d{2})\\d{2}",
+    "IsWindows11": "Read OperatingSystem; Win 11/Windows 11 = 1; Win 10/Windows 10 = 0; reject missing or unknown values"
+  },
+  "input_requirements": {
+    "missing_values": "Reject; do not replace with zero",
+    "cpu_reference_required": true,
+    "gpu_reference_required": true,
+    "outside_training_ranges": "Flag as extrapolation",
+    "operating_system_required": true
+  },
+  "training_ranges": {
+    "GpuScore": {
+      "min": 12460.0,
+      "max": 35623.0
+    },
+    "CpuMultiScore": {
+      "min": 13953.0,
+      "max": 70109.0
+    },
+    "IsIntel": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "GpuGeneration": {
+      "min": 30.0,
+      "max": 50.0
+    },
+    "IsUltra": {
+      "min": 0.0,
+      "max": 1.0
+    },
+    "IsWindows11": {
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "metrics": {
+    "training": {
+      "mae": 1730.154111649948,
+      "rmse": 2541.659809597069,
+      "r2": 0.8021916802929532
+    },
+    "cross_validation_oof": {
+      "mae": 1939.6304889141145,
+      "rmse": 2831.0523422913175,
+      "r2": 0.7545825108994211
+    },
+    "test": {
+      "mae": 1771.6894353492753,
+      "rmse": 2157.7441830917055,
+      "r2": 0.8745771836628657
+    }
+  },
+  "training_cpu_count": 15,
+  "training_gpu_count": 11,
+  "source_excel_name": "Benchmark final.xlsx",
+  "source_excel_sha256": "a5a62d419df5a23ce82f2d28d3d10a3900704e0667380b12e4a008cea414d537",
+  "versions": {
+    "sklearn": "1.6.1",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "joblib": "1.6.0"
+  },
+  "limitations": [
+    "Training R2 is not independent validation.",
+    "The model was fitted on 80 rows.",
+    "The remaining 20 rows were reserved for testing.",
+    "Benchmark run conditions can vary.",
+    "IsIntel, IsUltra and IsWindows11 coefficients represent statistical associations, not causality.",
+    "Prediction target is PCMark 10 Rendering and Visualization Score.",
+    "Predictions outside training ranges are extrapolation."
+  ]
+}

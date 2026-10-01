@@ -1,5 +1,7 @@
 # Báo cáo giữa kỳ PC-DSS
 
+> Hồ sơ giai đoạn 22/09/2026, giữ để đối chiếu tiến độ. Phạm vi hiện tại dùng CSV, Gaming/Rendering và bộ PC có sẵn; xem [yêu cầu hiện tại](docs/requirements.md).
+
 **Đề tài: Hỗ trợ lựa chọn cấu hình máy tính theo nhu cầu và ngân sách**
 
 **Cập nhật: 22/09/2026**
@@ -455,7 +457,7 @@ Dấu SHA-256 giúp xác định đúng bản Excel dùng để tạo kết qu�
 - [README tổng quan](README.md)
 - [Yêu cầu hệ thống](docs/requirements.md)
 - [Mẫu thu thập dữ liệu](docs/data-collection-template.md)
-- [Thiết kế cơ sở dữ liệu](docs/database-demo.md)
+- [Mã SQL giai đoạn trước](database/README.md)
 - [Kịch bản kiểm tra API](backend/tests/README.md)
 
 </details>

@@ -1,0 +1,107 @@
+{
+  "source_workbook": "Benchmark final.xlsx",
+  "source_sha256": "cfaa02901da2741afa249c2aef9b8578aa5dca108db77054d11427f29606fbe6",
+  "models": {
+    "gaming": {
+      "file": "gaming_final.zip",
+      "sha256": "8d3f5946b6d7814fe3b9d0062c0c653d56b55766fdaf579568305d7b76757fc8",
+      "version": "gaming-log-v1-20260920T194416994761Z",
+      "features": [
+        "GpuScore",
+        "CpuMultiScore"
+      ],
+      "rows": 144,
+      "fit_scope": "all 144 eligible rows; no test split in this final export"
+    },
+    "rendering": {
+      "file": "rendering_model_20261001T151656208296Z.zip",
+      "sha256": "ebb849b5908f7bf1b3d9ea1677682aac0819222b45bf6e4700c5b03db8b91165",
+      "version": "rendering-linear-v1-20261001T151656208296Z",
+      "features": [
+        "GpuScore",
+        "CpuMultiScore",
+        "IsIntel",
+        "GpuGeneration",
+        "IsUltra",
+        "IsWindows11"
+      ],
+      "rows": 100,
+      "split_counts": {
+        "test": 20,
+        "train": 80
+      }
+    }
+  },
+  "target_column": "Score",
+  "non_feature_columns": [
+    "RunId",
+    "MachineGroupId",
+    "Split"
+  ],
+  "excluded_gaming_run_ids": [
+    "RUN-GAMING-020",
+    "RUN-GAMING-032"
+  ],
+  "rendering_train_test_overlap_groups": [
+    "intelcoreultra7265f__geforcertx5080"
+  ],
+  "checks": {
+    "all_features_and_targets_match_model_exports": true,
+    "rendering_split_preserved": true,
+    "source_benchmarks_independently_verified": false
+  },
+  "csv_encoding": "utf-8-sig",
+  "delimiter": ",",
+  "files": {
+    "gaming_dataset.csv": "01720dd35dfd6750d5bd5a2c51e104bc49664f159abc1baa66d5d58f878cbad3",
+    "reference.csv": "2c99572479143cc2881cc4859f02cb92ed2c4f67b691577efaa91da4a93d2a9a",
+    "rendering_dataset.csv": "58c814f5d20655cdeae069c8b5bb778e4d1c0c81365d97b39ded7416be6077ac"
+  },
+  "reference_additions": [
+    {
+      "reference_id": "REF-GPU-012",
+      "model_name": "GeForce RTX 3050 6GB",
+      "raw_score": 10741,
+      "checked_at": "2026-10-01",
+      "provenance": "User-provided spreadsheet screenshot; score/date/TestVersion/ACCEPT status transcribed from screenshot. Canonical desktop GPU source URL resolved by lookup. Historical score not independently reverified.",
+      "source_url": "https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3050+6GB&id=5069",
+      "review_status_from_source": "ACCEPT",
+      "review_note_from_source": "PassMark average G3D Mark for GeForce RTX 3050 6GB.",
+      "usage": "Inference lookup extension; not part of the training datasets or original model reference snapshots.",
+      "previous_reference_csv_sha256": "2d5cbb0ff46d7b80d84d70a917caadc38693605c5d299e576c4737de20d24bfe",
+      "outside_training_ranges": {
+        "gaming": {
+          "feature": "GpuScore",
+          "value": 10741,
+          "training_min": 12460.0,
+          "training_max": 35623.0,
+          "requires_extrapolation_flag": true
+        },
+        "rendering": {
+          "feature": "GpuScore",
+          "value": 10741,
+          "training_min": 12460.0,
+          "training_max": 35623.0,
+          "requires_extrapolation_flag": true
+        }
+      }
+    }
+  ],
+  "rendering_source_update": {
+    "run_ids": [
+      "RUN-RENDER-031",
+      "RUN-RENDER-074"
+    ],
+    "type": "User replaced benchmark runs and source URLs; not corrections of the old runs",
+    "scores": {
+      "RUN-RENDER-031": 14827,
+      "RUN-RENDER-074": 21275
+    },
+    "split_preserved": true,
+    "coefficients_unchanged": true,
+    "source_remaining_issues": [],
+    "metadata_cleanup": "Updated notes for rows 031/074 and RAM speed for row 074 to 4788 MHz; model features/targets unchanged.",
+    "cleanup_status": "Active files synchronized; archive deletion blocked by policy. Empty label_corrections.json has no effect."
+  },
+  "training_source_sha256": "a5a62d419df5a23ce82f2d28d3d10a3900704e0667380b12e4a008cea414d537"
+}

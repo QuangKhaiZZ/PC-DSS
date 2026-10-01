@@ -1,5 +1,7 @@
 # Database PC-DSS
 
+> Thiết kế giai đoạn trước, không dùng trong backend hiện tại. Backend hiện đọc CSV và metadata model; xem [hướng dẫn chạy](../backend/README.md). Nội dung dưới đây chỉ phục vụ đối chiếu lịch sử.
+
 Cơ sở dữ liệu gồm 15 bảng lưu linh kiện, giá tham khảo, benchmark, yêu cầu tư vấn và cấu hình đề xuất.
 
 ## Các file
@@ -8,8 +10,6 @@ Cơ sở dữ liệu gồm 15 bảng lưu linh kiện, giá tham khảo, benchma
 |---|---|
 | `database.sql` | Tạo 15 bảng, khóa ngoại, ràng buộc và thêm 8 danh mục, 10 thương hiệu; chưa có sản phẩm/giá/benchmark |
 | `03-check-data.sql` | Tìm lỗi nhập nhầm loại linh kiện, thiếu benchmark và một số cấu hình không hợp lệ |
-| `../docs/database-demo.md` | ERD, mô tả trường và các quy tắc kiểm tra |
-| `../docs/data-collection-template.md` | Mẫu dữ liệu và quy ước nhập thông số linh kiện |
 | `tests/verify_database.py` | Bộ kiểm thử dành cho phát triển, chạy trên MySQL tạm riêng; không bắt buộc để khởi tạo database hoặc chạy ứng dụng |
 
 ## Chạy bằng MySQL Workbench

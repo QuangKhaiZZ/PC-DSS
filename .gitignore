@@ -487,3 +487,10 @@ frontend/dist/
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+
+# Local inspection artifacts
+*.inspect.ndjson
+*.code-workspace
+
+# Local editable copy; the application uses the CSV catalog
+/data/processed/pc_catalog.xlsx

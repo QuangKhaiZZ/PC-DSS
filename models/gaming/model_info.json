@@ -1,0 +1,65 @@
+{
+  "model_version": "gaming-log-v1-20260920T194416994761Z",
+  "created_at_utc": "2026-09-20T19:44:16.994761+00:00",
+  "model_type": "Nonnegative log-log linear regression",
+  "fit_scope": "All accepted eligible rows",
+  "target": "3DMark Time Spy Overall",
+  "feature_order": [
+    "GpuScore",
+    "CpuMultiScore"
+  ],
+  "feature_definitions": {
+    "GpuScore": "PassMark G3D Mark; exact GPU and VRAM variant",
+    "CpuMultiScore": "PassMark CPU Mark"
+  },
+  "formula": "Score = A * GpuScore**b * CpuMultiScore**c",
+  "coefficients": {
+    "A": 0.006512728314282055,
+    "b": 1.2396715874601234,
+    "c": 0.21617706922388444
+  },
+  "input_requirements": {
+    "finite": true,
+    "strictly_positive": true,
+    "missing_values": "Reject; do not replace with zero",
+    "outside_training_ranges": "Flag as extrapolation"
+  },
+  "training_ranges": {
+    "GpuScore": {
+      "min": 12460.0,
+      "max": 35623.0
+    },
+    "CpuMultiScore": {
+      "min": 13953.0,
+      "max": 70109.0
+    }
+  },
+  "training_row_count": 144,
+  "excluded_row_count": 2,
+  "cpu_count": 15,
+  "gpu_count": 11,
+  "source_excel_name": "Benchmark (6) (1).xlsx",
+  "source_excel_sha256": "2d3e796ca57f027c86cdfb5598d61390d4e07c1eb0acca86ee225e2948666895",
+  "versions": {
+    "sklearn": "1.6.1",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "joblib": "1.6.0"
+  },
+  "training_metrics_only": {
+    "MAE": 1525.9585550893262,
+    "RMSE": 1956.8114087386643,
+    "R2": 0.9261150661575163
+  },
+  "evaluation": {
+    "independent_validation_of_final_model": false,
+    "cv_test_results": "See separate comparison notebook and export"
+  },
+  "limitations": [
+    "Training metrics are not independent validation.",
+    "Benchmark run conditions vary.",
+    "Monotonic predictions do not guarantee realistic bottlenecks.",
+    "Predictions represent Time Spy Overall, not per-game FPS.",
+    "Input ranges do not establish coverage of every CPU-GPU pair."
+  ]
+}

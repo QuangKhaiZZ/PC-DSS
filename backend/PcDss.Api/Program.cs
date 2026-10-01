@@ -1,12 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using PcDss.Api.Data;
 using PcDss.Api.Services;
-using PcDss.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -18,20 +16,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException(
-        "Không tìm thấy connection string DefaultConnection.");
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL(connectionString));
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-
-builder.Services.AddScoped<IBrandService, BrandService>();
-
-builder.Services.AddScoped<IProductService, ProductService>();
+var dataDirectory = Path.GetFullPath(builder.Configuration["Dss:DataDirectory"] ?? "DssData",
+    AppContext.BaseDirectory);
+builder.Services.AddSingleton(new CatalogService(dataDirectory));
+builder.Services.AddSingleton(new PredictionService(dataDirectory));
+builder.Services.AddSingleton<RecommendationService>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -39,12 +31,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-
 app.UseCors("Frontend");
 app.MapControllers();
+app.MapGet("/health", () => Results.Ok(new { status = "ok", storage = "csv" }));
 
 app.Run();
