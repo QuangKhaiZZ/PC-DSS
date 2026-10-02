@@ -1,34 +1,58 @@
-# PC-DSS-Frontend
+# PC-DSS Frontend
 
-Frontend React + Vite cho đề tài:
-**Xây dựng hệ thống gợi ý lựa chọn cấu hình máy tính cá nhân theo nhu cầu người dùng**
+React + Vite, tư vấn cấu hình từ API ASP.NET Core.
 
-## Yêu cầu
-- Node.js 18+
-- Backend ASP.NET Core chạy tại `http://localhost:5170`
-
-## Chạy project
+## Chạy và build
 
 ```bash
 npm install
 npm run dev
+npm run build
 ```
 
-Mở địa chỉ Vite hiển thị trong terminal (thường là http://localhost:5173).
-
-Sao chép `.env.example` thành `.env` nếu cần đổi địa chỉ backend:
+Sao chép `.env.example` thành `.env` để cấu hình backend:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5170
 ```
 
-## API đang kết nối
+Giá trị là URL gốc, không chứa `/api/recommendations`. Mặc định là
+`http://localhost:5170`; giá trị rỗng dùng cùng origin. Vite đọc biến khi khởi động
+hoặc build, nên cần khởi động/build lại sau khi đổi. Backend hiện chỉ cho phép
+CORS từ `http://localhost:5173`; dùng đúng origin này khi chạy frontend riêng.
 
-- GET/POST `/api/categories`
-- GET/PUT/DELETE `/api/categories/{id}`
-- API Brand chưa được triển khai ở backend hiện tại.
+## Contract đang dùng
 
-## Lưu ý
-Frontend đã có trang DSS và dữ liệu kết quả minh họa. Khi có API thuật toán gợi ý thật, thay phần xử lý submit trong `src/pages/Recommendation.jsx` bằng API recommendation của backend.
+Nguồn chuẩn: `backend/PcDss.Api/Controllers/RecommendationsController.cs` và
+`backend/PcDss.Api/DTOs/Recommendations/RecommendationDtos.cs`.
 
-Trang Category đang dùng đúng DTO của backend: `{ categoryName }` và đọc `categoryId/categoryName`.
+Frontend gọi `POST /api/recommendations`, `Content-Type: application/json`:
+
+```json
+{ "budget": 25000000, "purpose": "Gaming", "topCount": 3 }
+```
+
+- `budget`: số VNĐ nguyên, từ 1 đến 999999999999999.
+- `purpose`: chỉ `Gaming` hoặc `Rendering`.
+- `topCount`: số nguyên từ 1 đến 3.
+
+Response dùng camelCase: metadata `budget`, `purpose`, `modelVersion`, `target`,
+`operatingSystemAssumption`, `totalPcCount`, `eligiblePcCount`, `rankingRule`,
+`message`; danh sách `items` và `excluded`.
+Mỗi item chứa `rank`, `pc`, `prediction`, `budgetRemainingVnd`, `reason`.
+UI hiển thị cấu hình, giá, điểm dự đoán, cảnh báo, ngoại suy, nguồn giá và lý do
+loại PC từ response. Không tự tạo kết quả hay phần trăm phù hợp.
+
+Không có trang/service Categories hoặc Brands vì backend không cung cấp API đó.
+
+## Kiểm tra UI
+
+Form có nhãn `Nhu cầu cấu hình PC`, input `Ngân sách VNĐ`, nhóm nút
+`Mục đích sử dụng` và `Số lượng gợi ý`, nút `Phân tích và gợi ý`.
+Nút lựa chọn có `aria-pressed`; thông báo tiến trình có `role="status"`,
+lỗi có `role="alert"`, mỗi cấu hình là một `article` có tên theo hạng/sản phẩm.
+
+Các luồng cần kiểm tra: idle, loading (khóa form), success-empty, success,
+validation, lỗi mạng/HTTP/JSON và gửi lại sau lỗi. Budget trống, 0, âm, số lẻ
+hoặc vượt giới hạn không được gửi request. Kiểm tra cả Gaming và Rendering,
+TopCount 1–3, cảnh báo và danh sách PC bị loại với response thực từ backend.

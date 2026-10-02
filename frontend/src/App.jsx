@@ -4,8 +4,6 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Recommendation from "./pages/Recommendation";
-import Categories from "./pages/Categories";
-import Brands from "./pages/Brands";
 
 export default function App() {
   return (
@@ -17,8 +15,6 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/recommendation" element={<Recommendation />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/brands" element={<Brands />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
