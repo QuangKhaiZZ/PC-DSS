@@ -2,7 +2,7 @@
 
 ## Luồng quyết định
 
-Ngân sách + mục đích → danh mục PC → lọc giá/tồn kho → tra reference → tạo đặc trưng → dự đoán → xếp hạng → trả phương án và giải thích.
+Ngân sách + mục đích → danh mục PC → lọc giá → tra reference → tạo đặc trưng → dự đoán → xếp hạng → trả phương án và giải thích.
 
 Backend đọc CSV và metadata khi khởi động. Không huấn luyện lại trên mỗi request. Nguồn dữ liệu, mô hình và quy tắc lựa chọn là ba phần riêng của hệ trợ giúp quyết định.
 
@@ -21,8 +21,8 @@ RAM, SSD và giá không tham gia công thức. Vì vậy các bộ cùng CPU/GP
 
 ## Lọc và xếp hạng
 
-- Loại giá lớn hơn ngân sách và OUT_OF_STOCK.
-- Giữ UNKNOWN kèm cảnh báo xác nhận lại cửa hàng.
+- Loại giá lớn hơn ngân sách.
+- Tồn kho tại link nguồn không phải tiêu chí tư vấn.
 - Thiếu reference hoặc không tạo được đầu vào hợp lệ: loại và trả lý do.
 - Ngoài khoảng train: vẫn xét, gắn isExtrapolation và warnings.
 - Sắp điểm giảm dần, giá tăng dần, rồi PcId; trả tối đa 3 bộ.

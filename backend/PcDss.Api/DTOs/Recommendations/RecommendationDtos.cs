@@ -8,6 +8,9 @@ public sealed class RecommendationRequest : IValidatableObject
     [Range(typeof(decimal), "1", "999999999999999")]
     public decimal Budget { get; set; }
 
+    [Range(typeof(decimal), "0", "999999999999999")]
+    public decimal MinBudget { get; set; } = 0;
+
     [Required, RegularExpression("^(Gaming|Rendering)$")]
     public string Purpose { get; set; } = string.Empty;
 
@@ -18,6 +21,10 @@ public sealed class RecommendationRequest : IValidatableObject
     {
         if (Budget != decimal.Truncate(Budget))
             yield return new ValidationResult("Ngân sách VNĐ phải là số nguyên.", [nameof(Budget)]);
+        if (MinBudget != decimal.Truncate(MinBudget))
+            yield return new ValidationResult("Giá tối thiểu VNĐ phải là số nguyên.", [nameof(MinBudget)]);
+        if (MinBudget > Budget)
+            yield return new ValidationResult("Giá tối thiểu không được lớn hơn giá tối đa.", [nameof(MinBudget), nameof(Budget)]);
     }
 }
 
@@ -34,4 +41,5 @@ public sealed record ExcludedPc(string PcId, string Code, string Reason);
 public sealed record RecommendationResponse(decimal Budget, string Purpose,
     string ModelVersion, string Target, string? OperatingSystemAssumption,
     int TotalPcCount, int EligiblePcCount, string RankingRule, string Message,
-    IReadOnlyList<RankedPc> Items, IReadOnlyList<ExcludedPc> Excluded);
+    IReadOnlyList<RankedPc> Items, IReadOnlyList<ExcludedPc> Excluded,
+    decimal MinBudget);

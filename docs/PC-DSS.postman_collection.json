@@ -112,7 +112,7 @@
       ]
     },
     {
-      "name": "Cảnh báo RTX 3050 6GB",
+      "name": "Dự đoán RTX 3050 6GB (reference mới)",
       "request": {
         "method": "GET",
         "header": [],

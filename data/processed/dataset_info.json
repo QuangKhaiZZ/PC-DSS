@@ -1,22 +1,27 @@
 {
   "source_workbook": "Benchmark final.xlsx",
-  "source_sha256": "cfaa02901da2741afa249c2aef9b8578aa5dca108db77054d11427f29606fbe6",
+  "source_original_filename": "Benchmark finals.xlsx",
+  "source_sha256": "e89cc8ecf41d42ea5ba9ca0a91399669f4b89ef399be398b881820525476c8ca",
+  "updated_at_utc": "2026-10-03T14:19:28.853353+00:00",
+  "backup_archive": "outputs/model-update-20261003T141928Z/before-update.zip",
   "models": {
     "gaming": {
-      "file": "gaming_final.zip",
-      "sha256": "8d3f5946b6d7814fe3b9d0062c0c653d56b55766fdaf579568305d7b76757fc8",
-      "version": "gaming-log-v1-20260920T194416994761Z",
+      "file": "gaming_final_20261003T072837179133Z.zip",
+      "sha256": "c8e3aad09c2d978c3edfb5a645efe636d6b71f62fb17d91831ff578ccd08ecc8",
+      "version": "gaming-log-v1-20261003T072837179133Z",
       "features": [
         "GpuScore",
         "CpuMultiScore"
       ],
-      "rows": 144,
-      "fit_scope": "all 144 eligible rows; no test split in this final export"
+      "rows": 158,
+      "fit_scope": "All accepted eligible rows",
+      "training_source_sha256": "e010ec6ea0af90398b3e444140d3eea43f68fc9ee9384953cc44a70c644f9a46",
+      "training_source_filename": "Benchmark final - bo sung 14400F.xlsx"
     },
     "rendering": {
-      "file": "rendering_model_20261001T151656208296Z.zip",
-      "sha256": "ebb849b5908f7bf1b3d9ea1677682aac0819222b45bf6e4700c5b03db8b91165",
-      "version": "rendering-linear-v1-20261001T151656208296Z",
+      "file": "rendering_model_20261003T141514136988Z.zip",
+      "sha256": "0cc4839485ffcef688c6a8f941b2d5ce9717221cf0dd028805c544364f33604a",
+      "version": "rendering-linear-v1-20261003T141514136988Z",
       "features": [
         "GpuScore",
         "CpuMultiScore",
@@ -25,10 +30,13 @@
         "IsUltra",
         "IsWindows11"
       ],
-      "rows": 100,
+      "rows": 130,
+      "fit_scope": "104 training rows only",
+      "training_source_sha256": "e89cc8ecf41d42ea5ba9ca0a91399669f4b89ef399be398b881820525476c8ca",
+      "training_source_filename": "Benchmark finals.xlsx",
       "split_counts": {
-        "test": 20,
-        "train": 80
+        "train": 104,
+        "test": 26
       }
     }
   },
@@ -42,66 +50,33 @@
     "RUN-GAMING-020",
     "RUN-GAMING-032"
   ],
-  "rendering_train_test_overlap_groups": [
-    "intelcoreultra7265f__geforcertx5080"
-  ],
+  "rendering_train_test_overlap_groups": [],
   "checks": {
     "all_features_and_targets_match_model_exports": true,
     "rendering_split_preserved": true,
+    "model_reference_snapshots_agree": true,
+    "raw_scores_and_components_match_model_exports": true,
     "source_benchmarks_independently_verified": false
   },
   "csv_encoding": "utf-8-sig",
   "delimiter": ",",
   "files": {
-    "gaming_dataset.csv": "01720dd35dfd6750d5bd5a2c51e104bc49664f159abc1baa66d5d58f878cbad3",
-    "reference.csv": "2c99572479143cc2881cc4859f02cb92ed2c4f67b691577efaa91da4a93d2a9a",
-    "rendering_dataset.csv": "58c814f5d20655cdeae069c8b5bb778e4d1c0c81365d97b39ded7416be6077ac"
+    "gaming_dataset.csv": "6c327b7913702cda9db9c20b27b44d6c0babc6b8bd23ff26d637e68493a75637",
+    "rendering_dataset.csv": "f945e1f3397d3792ae4d248d80445b17abc2f3a0929316cdeca335842a472256",
+    "reference.csv": "f1409e976133e31391d318a1f369d1ed85551d3b1c9d80ef748e8167eca04794",
+    "pc_catalog.csv": "a075e3d9b4af36b23e975b23b5ff8561f511c23413e0c242ad646997fafb77f9"
   },
-  "reference_additions": [
-    {
-      "reference_id": "REF-GPU-012",
-      "model_name": "GeForce RTX 3050 6GB",
-      "raw_score": 10741,
-      "checked_at": "2026-10-01",
-      "provenance": "User-provided spreadsheet screenshot; score/date/TestVersion/ACCEPT status transcribed from screenshot. Canonical desktop GPU source URL resolved by lookup. Historical score not independently reverified.",
-      "source_url": "https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3050+6GB&id=5069",
-      "review_status_from_source": "ACCEPT",
-      "review_note_from_source": "PassMark average G3D Mark for GeForce RTX 3050 6GB.",
-      "usage": "Inference lookup extension; not part of the training datasets or original model reference snapshots.",
-      "previous_reference_csv_sha256": "2d5cbb0ff46d7b80d84d70a917caadc38693605c5d299e576c4737de20d24bfe",
-      "outside_training_ranges": {
-        "gaming": {
-          "feature": "GpuScore",
-          "value": 10741,
-          "training_min": 12460.0,
-          "training_max": 35623.0,
-          "requires_extrapolation_flag": true
-        },
-        "rendering": {
-          "feature": "GpuScore",
-          "value": 10741,
-          "training_min": 12460.0,
-          "training_max": 35623.0,
-          "requires_extrapolation_flag": true
-        }
-      }
-    }
-  ],
-  "rendering_source_update": {
-    "run_ids": [
-      "RUN-RENDER-031",
-      "RUN-RENDER-074"
+  "source_note": "Raw workbook is the exact rendering training input. Gaming records and shared reference values match its export; gaming training workbook bytes have a different recorded hash, preserved in model metadata.",
+  "catalog_update": {
+    "checked_at": "2026-10-04",
+    "pc_count": 36,
+    "added_pc_count": 26,
+    "operating_system_scenario": "Windows 11",
+    "source_manifest": "data/raw/pc_catalog_sources_20261004.json",
+    "backup_archive": "outputs/catalog-update-20261004/before-update.zip",
+    "runtime_reference_additions": [
+      "REF-CPU-019-M"
     ],
-    "type": "User replaced benchmark runs and source URLs; not corrections of the old runs",
-    "scores": {
-      "RUN-RENDER-031": 14827,
-      "RUN-RENDER-074": 21275
-    },
-    "split_preserved": true,
-    "coefficients_unchanged": true,
-    "source_remaining_issues": [],
-    "metadata_cleanup": "Updated notes for rows 031/074 and RAM speed for row 074 to 4788 MHz; model features/targets unchanged.",
-    "cleanup_status": "Active files synchronized; archive deletion blocked by policy. Empty label_corrections.json has no effect."
-  },
-  "training_source_sha256": "a5a62d419df5a23ce82f2d28d3d10a3900704e0667380b12e4a008cea414d537"
+    "model_exports_unchanged": true
+  }
 }

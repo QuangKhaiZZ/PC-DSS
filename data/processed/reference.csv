@@ -14,6 +14,8 @@ REF-CPU-012-M,CPU,AMD Ryzen 9 9900X3D,PassMark CPU,V10,CPU Mark,56127,https://ww
 REF-CPU-013-M,CPU,Intel Core i9-14900K,PassMark CPU,V10,CPU Mark,58253,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i9-14900K&id=5717,2026-09-16
 REF-CPU-014-M,CPU,Intel Core Ultra 9 285K,PassMark CPU,V10,CPU Mark,67264,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+Ultra+9+285K&id=6296,2026-09-16
 REF-CPU-015-M,CPU,AMD Ryzen 9 9950X3D,PassMark CPU,V10,CPU Mark,70109,https://www.cpubenchmark.net/cpu.php?cpu=AMD+Ryzen+9+9950X3D&id=6549,2026-09-16
+REF-CPU-016-M,CPU,Intel Core i5-12400F,PassMark CPU,V10,CPU Mark,19539,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i5-12400F&id=4681,2026-10-03
+REF-CPU-017-M,CPU,Intel Core i7-12700KF,PassMark CPU,V10,CPU Mark,33914,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i7-12700KF&id=4608,2026-10-03
 REF-GPU-001,GPU,GeForce RTX 3050 8GB,PassMark GPU,V10,G3D Mark,12460,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3050+8GB&id=4495,2026-09-16
 REF-GPU-002,GPU,GeForce RTX 3060 12GB,PassMark GPU,V10,G3D Mark,16710,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3060+12GB&id=4345,2026-09-16
 REF-GPU-003,GPU,GeForce RTX 4060 Ti 8GB,PassMark GPU,V10,G3D Mark,22596,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+4060+Ti&id=4827,2026-09-16
@@ -25,4 +27,8 @@ REF-GPU-008,GPU,GeForce RTX 5060 Ti 16GB,PassMark GPU,V10,G3D Mark,22619,https:/
 REF-GPU-009,GPU,GeForce RTX 5070,PassMark GPU,V10,G3D Mark,28652,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+5070&id=5940,2026-09-16
 REF-GPU-010,GPU,GeForce RTX 5070 Ti,PassMark GPU,V10,G3D Mark,32346,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+5070+Ti&id=5878,2026-09-16
 REF-GPU-011,GPU,GeForce RTX 5080,PassMark GPU,V10,G3D Mark,35623,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+5080&id=5721,2026-09-16
-REF-GPU-012,GPU,GeForce RTX 3050 6GB,PassMark GPU,V10,G3D Mark,10741,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3050+6GB&id=5069,2026-10-01
+REF-GPU-012,GPU,GeForce RTX 3050 6GB,PassMark GPU,V10,G3D Mark,10740,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+3050+6GB&id=5069,2026-10-03
+REF-CPU-018-M,CPU,Intel Core i5-14400F,PassMark CPU,V10,CPU Mark,25418,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i5-14400F&id=5837,2026-10-03
+REF-GPU-013,GPU,GeForce RTX 5060 Ti 8GB,PassMark GPU,V10,G3D Mark,21876,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+5060+Ti+8GB&id=6441,2026-10-03
+REF-GPU-014,GPU,GeForce RTX 4060,PassMark GPU,V10,G3D Mark,19484,https://www.videocardbenchmark.net/gpu.php?gpu=GeForce+RTX+4060&id=4850,2026-10-03
+REF-CPU-019-M,CPU,Intel Core i5-12600KF,PassMark CPU,V10,CPU Mark,27500,https://www.cpubenchmark.net/cpu.php?cpu=Intel+Core+i5-12600KF&id=4625,2026-10-04

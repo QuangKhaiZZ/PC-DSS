@@ -12,14 +12,14 @@ public sealed class RecommendationService(CatalogService catalog, PredictionServ
         var excluded = new List<ExcludedPc>();
         foreach (var pc in catalog.Items)
         {
+            if (pc.PriceVnd < request.MinBudget)
+            {
+                excluded.Add(new(pc.PcId, "BELOW_MIN_BUDGET", "Giá thấp hơn khoảng đã chọn."));
+                continue;
+            }
             if (pc.PriceVnd > request.Budget)
             {
                 excluded.Add(new(pc.PcId, "OVER_BUDGET", "Giá vượt ngân sách."));
-                continue;
-            }
-            if (pc.Availability == "OUT_OF_STOCK")
-            {
-                excluded.Add(new(pc.PcId, "OUT_OF_STOCK", "Nguồn báo hết hàng."));
                 continue;
             }
             try { eligible.Add((pc, predictor.Predict(pc, request.Purpose))); }
@@ -34,8 +34,8 @@ public sealed class RecommendationService(CatalogService catalog, PredictionServ
         return new(request.Budget, request.Purpose, model.Version, model.Target,
             request.Purpose == "Rendering" ? "Windows 11" : null,
             catalog.Items.Count, eligible.Count,
-            "Điểm dự đoán giảm dần; bằng điểm ưu tiên giá thấp hơn, sau đó PcId. UNKNOWN được giữ kèm cảnh báo.",
+            "Điểm dự đoán giảm dần; bằng điểm ưu tiên giá thấp hơn, sau đó PcId.",
             items.Length == 0 ? "Không có bộ PC đủ điều kiện trong ngân sách." : "Giá tham khảo theo nguồn; xem cảnh báo trên từng bộ.",
-            items, excluded);
+            items, excluded, request.MinBudget);
     }
 }

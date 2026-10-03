@@ -105,7 +105,9 @@ def main():
         try:
             base = server.ready()
             status, catalog = request(base, '/api/pc-catalog')
-            expect(status == 200 and len(catalog) == 12, 'Catalog count')
+            expect(status == 200 and len(catalog) == len(original), 'Catalog count')
+            expect({r['pcId'] for r in catalog} == {r['PcId'] for r in original}, 'Catalog IDs must match current CSV')
+            expect(all('availability' not in r for r in catalog), 'Stock field must not be part of DSS API')
             expect([r['priceVnd'] for r in catalog] == sorted(r['priceVnd'] for r in catalog), 'Catalog order')
             expect(request(base, '/api/pc-catalog/not-found')[0] == 404, 'Unknown PC')
             expect(request(base, '/api/pc-catalog/pc-016')[0] == 200, 'Case-insensitive PcId')
@@ -128,18 +130,51 @@ def main():
                 expect(result['items'] == [] and result['eligiblePcCount'] == 0, 'Empty recommendations')
                 _, result = request(base, '/api/recommendations', {'budget': 9950000, 'purpose': purpose})
                 expect(result['items'][0]['pc']['pcId'] == 'PC-016', 'Inclusive budget boundary')
-                _, result = request(base, '/api/recommendations', {'budget': 100000000, 'purpose': purpose})
-                expect(any(r['pcId'] == 'PC-028' and r['code'] == 'OUT_OF_STOCK' for r in result['excluded']), 'Out-of-stock filtering')
+                _, result = request(base, '/api/recommendations', {'budget': max(int(pc['PriceVnd']) for pc in original), 'purpose': purpose})
+                expect(result['eligiblePcCount'] == len(original) and result['excluded'] == [], 'All valid affordable PCs must be eligible')
             for row in read_csv(ROOT / 'data/validation/pc_predictions.csv'):
                 for purpose in ['Gaming', 'Rendering']:
                     status, result = request(base, f"/api/pc-catalog/{row['PcId']}/prediction?purpose={purpose}")
                     expect(status == 200, 'PC prediction failed')
                     close_score(result['predictedScore'], row[purpose.lower() + '_predicted_score'])
-                    expect(result['isExtrapolation'] == (row['PcId'] in ['PC-008', 'PC-011']), 'Extrapolation flag')
+                    expect(result['isExtrapolation'] == (row[purpose.lower() + '_range'] == 'EXTRAPOLATION'), 'Extrapolation flag')
                     if purpose == 'Rendering':
                         expect(result['operatingSystemAssumption'] == 'Windows 11', 'OS assumption')
-            _, unknown_stock = request(base, '/api/pc-catalog/PC-019/prediction?purpose=Gaming')
-            expect(any('tồn kho' in w for w in unknown_stock['warnings']), 'Missing stock warning')
+                        expect(not any('Windows 11' in w for w in result['warnings']), 'No Windows scenario warning')
+            for purpose in ['Gaming', 'Rendering']:
+                for lower, upper in [(10000000, 14999999), (15000000, 19999999), (20000000, 24999999),
+                                     (25000000, 34999999), (35000000, 44999999),
+                                     (45000000, 59999999), (60000000, 130000000)]:
+                    status, result = request(base, '/api/recommendations', {'minBudget': lower, 'budget': upper, 'purpose': purpose})
+                    expected = [pc for pc in original if lower <= int(pc['PriceVnd']) <= upper]
+                    expect(status == 200 and result['minBudget'] == lower, 'Price range accepted and echoed')
+                    expect(result['eligiblePcCount'] == len(expected), 'Both price boundaries applied before ranking')
+                    expect(all(lower <= item['pc']['priceVnd'] <= upper for item in result['items']), 'Results within selected range')
+                price = int(original[0]['PriceVnd'])
+                _, exact = request(base, '/api/recommendations', {'minBudget': price, 'budget': price, 'purpose': purpose})
+                expect(exact['eligiblePcCount'] == sum(int(pc['PriceVnd']) == price for pc in original), 'Inclusive exact price boundaries')
+            for lower in [-1, 0.5, 20000001]:
+                expect(request(base, '/api/recommendations', {'minBudget': lower, 'budget': 20000000, 'purpose': 'Gaming'})[0] == 400, 'Invalid lower price boundary')
+            for pc_id in ['PC-019', 'PC-028']:
+                _, prediction = request(base, f'/api/pc-catalog/{pc_id}/prediction?purpose=Gaming')
+                expect(prediction['warnings'] == [], 'Stock warnings must not affect prediction')
+        finally:
+            server.close()
+
+        # Old CSV stock columns, if supplied, cannot affect eligibility or ranking.
+        # Without a stock column the real catalog above must also load successfully.
+        stock_rows = [dict(original[0], PcId=f'STOCK-{i}', PriceVnd=str(100+i), Availability=value)
+                      for i, value in enumerate(['OUT_OF_STOCK', 'UNKNOWN', 'IN_STOCK', '', 'UNUSED'])]
+        write_csv(data / 'pc_catalog.csv', stock_rows)
+        server = Server(data, work)
+        try:
+            base = server.ready()
+            for purpose in ['Gaming', 'Rendering']:
+                _, result = request(base, '/api/recommendations', {'budget': 1000, 'purpose': purpose})
+                expect(result['eligiblePcCount'] == len(stock_rows) and result['excluded'] == [], 'Stock must not filter PCs')
+                expect([r['pc']['pcId'] for r in result['items']] == ['STOCK-0', 'STOCK-1', 'STOCK-2'], 'Rank equal scores by price regardless of stock')
+                for item in result['items']:
+                    expect(not any('tồn kho' in w or 'hết hàng' in w for w in item['prediction']['warnings']), 'Stock warnings removed')
         finally:
             server.close()
 
@@ -149,9 +184,9 @@ def main():
         rows = []
         for i, v in enumerate(vectors + render_vectors):
             rows.append(dict(original[0], PcId=f'VECTOR-{i:03}', CpuModel=v['CpuModel'], GpuModel=v['GpuModel']))
-        rows += [dict(original[0], PcId='MISSING-CPU', CpuModel='Intel Core i5-14400F'),
+        rows += [dict(original[0], PcId='MISSING-CPU', CpuModel='Intel Core i5-14400KF'),
                  dict(original[0], PcId='MISSING-GPU', GpuModel='GeForce RTX 3060 8GB'),
-                 dict(original[0], PcId='QUOTED', ProductName='PC "DSS", thử\nTiếng Việt', PriceVnd='1', Availability='UNKNOWN')]
+                 dict(original[0], PcId='QUOTED', ProductName='PC "DSS", thử\nTiếng Việt', PriceVnd='1')]
         write_csv(data / 'pc_catalog.csv', rows)
         server = Server(data, work)
         try:
@@ -179,8 +214,11 @@ def main():
                                          dict(original[0], PcId='TIE-CHEAP', PriceVnd='100')])
         modelpath = data/'gaming/model_info.json'
         model = json.loads(modelpath.read_text(encoding='utf8'))
+        original_prediction = next(r for r in read_csv(ROOT / 'data/validation/pc_predictions.csv') if r['PcId'] == original[0]['PcId'])
         model['coefficients']['A'] *= 2
         model['model_version'] = 'test-coefficients-from-file'
+        # Exercise extrapolation even when every real catalog PC is now in range.
+        model['training_ranges']['GpuScore']['min'] = float(original_prediction['GpuScore']) + 1
         modelpath.write_text(json.dumps(model), encoding='utf8')
         server = Server(data, work)
         try:
@@ -188,7 +226,8 @@ def main():
             _, result = request(base, '/api/recommendations', {'budget': 200, 'purpose': 'Gaming'})
             expect([x['pc']['pcId'] for x in result['items']] == ['TIE-CHEAP', 'TIE-EXPENSIVE'], 'Price tie-break')
             expect(result['modelVersion'] == 'test-coefficients-from-file', 'Model metadata not loaded')
-            close_score(result['items'][0]['prediction']['predictedScore'], float(vectors[0]['ExpectedScore'])*2)
+            close_score(result['items'][0]['prediction']['predictedScore'], float(original_prediction['gaming_predicted_score'])*2)
+            expect(result['items'][0]['prediction']['isExtrapolation'], 'Out-of-range fixture must be flagged')
         finally:
             server.close()
 
@@ -213,7 +252,7 @@ def main():
         model['feature_order'] = ['CpuMultiScore', 'GpuScore']
         modelpath.write_text(json.dumps(model), encoding='utf8')
         invalid_startup()
-    print(f'PASS: {checks} assertions; 12 real PCs, 165 gaming vectors, 20 render vectors, API validation, CSV parsing, filters and ranking. No MySQL.')
+    print(f'PASS: {checks} assertions; {len(original)} real PCs, {len(vectors)} gaming vectors, {len(render_vectors)} render vectors, API validation, CSV parsing, filters and ranking. No MySQL.')
 
 if __name__ == '__main__':
     main()

@@ -26,7 +26,7 @@ Ví dụ POST:
 
 `purpose`: chính xác `Gaming` hoặc `Rendering`; ngân sách là số nguyên VND dương; `topCount` từ 1 đến 3 (mặc định 3). Dữ liệu request sai trả 400. Không có bộ phù hợp trả 200 với `items=[]` và thông báo; không trả bộ vượt ngân sách.
 
-Kết quả có `items`, lý do xếp hạng, số tiền còn lại, phiên bản model, tên benchmark đích, đầu vào model và cảnh báo. `excluded` giải thích các bộ vượt ngân sách, hết hàng hoặc thiếu đầu vào model. Bộ hợp lệ ngoài top 3 chỉ không được chọn, không bị ghi là dữ liệu lỗi.
+Kết quả có `items`, lý do xếp hạng, số tiền còn lại, phiên bản model, tên benchmark đích, đầu vào model và cảnh báo. `excluded` giải thích các bộ vượt ngân sách hoặc thiếu đầu vào model. Bộ hợp lệ ngoài top 3 chỉ không được chọn, không bị ghi là dữ liệu lỗi.
 
 ## Dữ liệu và cập nhật
 
@@ -41,15 +41,17 @@ Build/publish tự đóng gói 4 file vào `DssData` cạnh DLL. Không phụ th
 
 ## Quy tắc DSS
 
-1. Chỉ xét PC có giá <= ngân sách. Loại OUT_OF_STOCK; UNKNOWN được giữ kèm cảnh báo hỏi lại shop.
+1. Chỉ xét PC có minBudget <= giá <= budget (minBudget mặc định 0); tình trạng tồn kho ở link nguồn không ảnh hưởng đến DSS.
 2. Tra đúng CPU/GPU từ reference; đủ đầu vào thì tính model đúng mục đích.
 3. Điểm dự đoán giảm dần; bằng điểm ưu tiên giá thấp, rồi PcId để ổn định kết quả. Không dùng RAM/SSD làm bộ lọc hoặc biến model lúc này.
 4. Trả tối đa 3 bộ với lý do và cảnh báo. Không tự bịa phần trăm phù hợp, không gộp thang điểm gaming và render.
 
-Render luôn dùng kịch bản Windows 11, không khẳng định Windows bán kèm. Ngoài min/max train vẫn được tính và xếp hạng kèm `isExtrapolation=true`; không coi IN_RANGE là đảm bảo chính xác. RTX 3050 6GB nằm ngoài phạm vi hiện tại. Dự đoán là điểm benchmark, không phải FPS hoặc số giây render. Giá theo shop và thời điểm CheckedAt, chưa đồng nhất VAT.
+Render luôn dùng kịch bản Windows 11, không khẳng định Windows bán kèm. Ngoài min/max train vẫn được tính và xếp hạng kèm `isExtrapolation=true`; không coi IN_RANGE là đảm bảo chính xác. RTX 3050 6GB đã nằm trong phạm vi train của hai model cập nhật ngày 03/10/2026. Dự đoán là điểm benchmark, không phải FPS hoặc số giây render. Giá theo shop và thời điểm CheckedAt, chưa đồng nhất VAT.
 
 ## Kiểm thử và chuyển đổi
 
 Xem [tests/README.md](tests/README.md). Các test CRUD/MySQL cũ được thay bằng test API CSV, lọc/xếp hạng và đối chiếu mô hình. Cơ sở dữ liệu MySQL cũ và credentials trên máy không bị xóa; backend không còn đọc chúng.
 
 Frontend vẫn còn menu/API cũ và kết quả minh họa. Chưa dùng giao diện đó để đánh giá backend DSS mới; dùng file HTTP hoặc Postman. Bước tích hợp giao diện là công việc tiếp theo.
+
+API hỗ trợ khoảng giá qua `minBudget` và `budget`, đều nguyên VND, `0 <= minBudget <= budget`. Ví dụ 10 đến dưới 15 triệu: `{"minBudget":10000000,"budget":14999999,"purpose":"Gaming"}`. Windows 11 vẫn là kịch bản model; không trả cảnh báo OS trong `warnings`. Giữ cảnh báo ngoại suy.

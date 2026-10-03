@@ -15,7 +15,7 @@ GET {{host}}/api/pc-catalog/PC-016/prediction?purpose=Gaming
 ### Render theo giả định Windows 11
 GET {{host}}/api/pc-catalog/PC-016/prediction?purpose=Rendering
 
-### RTX 3050 6GB: có cảnh báo ngoại suy
+### RTX 3050 6GB: kiểm tra reference 6GB và phạm vi model mới
 GET {{host}}/api/pc-catalog/PC-008/prediction?purpose=Gaming
 
 ### Tư vấn gaming 20 triệu
