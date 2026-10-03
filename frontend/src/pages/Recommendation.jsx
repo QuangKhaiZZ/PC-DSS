@@ -1,21 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Cpu,
-  Monitor,
-  MemoryStick,
-  HardDrive,
-  Gauge,
-  AlertTriangle,
-  Info,
-  Loader2,
-  PackageSearch,
-} from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Monitor, Gamepad2, Settings2, ClipboardList, CheckCircle2, AlertTriangle, Info, Loader2, PackageSearch } from "lucide-react";
 import Button from "../components/Button";
 import { getRecommendations } from "../services/recommendationService";
-
 /* ─── Hằng số ────────────────────────────────────────────────── */
 const PURPOSES = ["Gaming", "Rendering"];
 
@@ -56,16 +43,6 @@ function validateForm(form) {
 }
 
 /* ─── Sub-components ──────────────────────────────────────────── */
-function SpecIcon({ type }) {
-  const map = { CPU: Cpu, GPU: Monitor, RAM: MemoryStick, SSD: HardDrive };
-  const Icon = map[type] ?? Cpu;
-  return (
-    <div className="spec-icon">
-      <Icon size={21} />
-    </div>
-  );
-}
-
 function WarningList({ warnings }) {
   if (!warnings || warnings.length === 0) return null;
   return (
@@ -110,7 +87,7 @@ function RankedPcCard({ item }) {
       <div className="result-card" style={{ marginTop: 0, padding: "0 22px" }}>
         {specs.map(({ type, value }) => (
           <div className="spec-row" key={type}>
-            <SpecIcon type={type} />
+
             <div>
               <span>{type}</span>
               <strong>{value}</strong>
@@ -154,9 +131,31 @@ function RankedPcCard({ item }) {
   );
 }
 
+export function RecommendationSummary() {
+  const features = [
+    { title: "Điểm benchmark dự đoán", text: "Hiệu năng ước tính theo nhu cầu sử dụng." },
+    { title: "Giá và ngân sách còn lại", text: "Tổng chi phí và số tiền còn dư trong ngân sách." },
+    { title: "Lý do xếp hạng", text: "Giải thích vì sao cấu hình được đề xuất." },
+    { title: "Cảnh báo (nếu có)", text: "Các điểm cần lưu ý từ kết quả dự đoán." },
+  ];
+  return (
+    <section className="recommend-preview" aria-labelledby="recommend-preview-title">
+      <div className="recommend-card-heading"><ClipboardList size={26} aria-hidden="true" /><div><h2 id="recommend-preview-title">Bạn sẽ nhận được gì?</h2><p>Hệ thống phân tích dữ liệu và gợi ý cấu hình phù hợp với nhu cầu và ngân sách của bạn. Mỗi kết quả bao gồm:</p></div></div>
+      <ul className="preview-features">
+        {features.map(({ title, text }) => <li key={title}><h3>{title}</h3><p>{text}</p></li>)}
+      </ul>
+      <p className="preview-disclaimer">Thông số CPU, GPU, RAM, SSD và nguồn giá được hiển thị trong kết quả thực tế bên dưới.</p>
+    </section>
+  );
+}
+
 /* ─── Main component ──────────────────────────────────────────── */
 export default function Recommendation() {
-  const [form, setForm] = useState(INITIAL_FORM);
+  const [searchParams] = useSearchParams();
+  const [form, setForm] = useState(() => {
+    const purpose = searchParams.get("purpose");
+    return { ...INITIAL_FORM, purpose: PURPOSES.includes(purpose) ? purpose : INITIAL_FORM.purpose };
+  });
   const [status, setStatus] = useState("idle"); // idle | loading | success-empty | success | error
   const [result, setResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -205,152 +204,69 @@ export default function Recommendation() {
   const isLoading = status === "loading";
 
   return (
-    <div>
+    <div className="recommendation-page">
       {/* ─── Page title ─── */}
       <div className="page-title">
         <div>
-          <h2>Tư vấn cấu hình PC</h2>
-          <p>Nhập nhu cầu để hệ thống đưa ra cấu hình phù hợp.</p>
+          <nav className="recommend-breadcrumb" aria-label="Breadcrumb"><Link to="/">PC DSS</Link><ArrowRight size={12} aria-hidden="true" /><span>Tư vấn cấu hình</span></nav>
+          <h1>Tư vấn cấu hình <span>PC phù hợp</span></h1>
+          <p>Chọn nhu cầu, ngân sách tối đa và số lượng gợi ý để tìm cấu hình phù hợp với bạn.</p>
         </div>
         <Link to="/" className="btn btn-secondary">
           <ArrowLeft size={17} /> Trang chủ
         </Link>
       </div>
 
-      {/* ─── Form + Tip ─── */}
       <div className="recommend-layout">
-        {/* Form card */}
         <form className="form-card" aria-label="Nhu cầu cấu hình PC" aria-busy={isLoading} onSubmit={handleSubmit} noValidate>
-          {/* 1. Purpose */}
           <div className="form-section">
-            <h3>1. Mục đích sử dụng</h3>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div
-                className="option-grid"
-                style={{ gridTemplateColumns: "repeat(2, minmax(0, 140px))" }}
-                role="group"
-                aria-label="Mục đích sử dụng"
-              >
-                {PURPOSES.map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    aria-pressed={form.purpose === p}
-                    className={form.purpose === p ? "option selected" : "option"}
-                    onClick={() => set("purpose", p)}
-                    disabled={isLoading}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
+            <div className="recommend-section-heading"><span className="recommend-step">1</span><div><h3>Mục đích sử dụng</h3><p>Bạn sử dụng PC chủ yếu cho mục đích nào?</p></div></div>
+            <div className="option-grid purpose-options" role="group" aria-label="Mục đích sử dụng">
+              {PURPOSES.map((p) => (
+                <button key={p} type="button" aria-label={p} aria-pressed={form.purpose === p} className={form.purpose === p ? "option selected" : "option"} onClick={() => set("purpose", p)} disabled={isLoading}>
+                  {p === "Gaming" ? <Gamepad2 size={27} aria-hidden="true" /> : <Monitor size={27} aria-hidden="true" />}
+                  <span><strong>{p}</strong><small>{p === "Gaming" ? "Chơi game, giải trí" : "Dựng hình, trực quan hóa"}</small></span>
+                  {form.purpose === p && <CheckCircle2 className="selection-check" size={16} aria-hidden="true" />}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* 2. Budget */}
           <div className="form-section">
-            <h3>2. Ngân sách (VNĐ)</h3>
-            {/* Preset buttons */}
-            <div className="budget-presets">
+            <div className="recommend-section-heading"><span className="recommend-step">2</span><div><h3>Ngân sách tối đa (VND)</h3><p>Chọn mức nhanh hoặc nhập số tiền cụ thể.</p></div></div>
+            <div className="budget-presets" role="group" aria-label="Mức ngân sách nhanh">
               {BUDGET_PRESETS.map(({ label, value }) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={Number(form.budget) === value}
-                  className={
-                    Number(form.budget) === value
-                      ? "option selected"
-                      : "option"
-                  }
-                  onClick={() => set("budget", value)}
-                  disabled={isLoading}
-                >
-                  {label}
-                </button>
+                <button key={value} type="button" aria-pressed={Number(form.budget) === value} className={Number(form.budget) === value ? "option selected" : "option"} onClick={() => set("budget", value)} disabled={isLoading}>{label}</button>
               ))}
             </div>
-            {/* Manual input */}
-            <label htmlFor="budget-input" style={{ marginTop: "12px" }}>
-              Hoặc nhập thủ công
-              <input
-                id="budget-input"
-                type="number"
-                min="1"
-                max="999999999999999"
-                step="1"
-                required
-                placeholder="VD: 25000000"
-                value={form.budget}
-                onChange={(e) => set("budget", e.target.value)}
-                disabled={isLoading}
-                aria-label="Ngân sách VNĐ"
-                aria-invalid={Boolean(formError)}
-                aria-describedby={formError ? "form-error" : undefined}
-              />
-            </label>
-            {formError && (
-              <div id="form-error" role="alert" className="error-banner" style={{ marginTop: 10 }}>
-                {formError}
-              </div>
-            )}
+            <label htmlFor="budget-input" className="recommend-budget-label">Nhập ngân sách thủ công</label>
+            <div className="recommend-budget-input"><input id="budget-input" type="number" min="1" max="999999999999999" step="1" required placeholder="Ví dụ: 25000000" value={form.budget} onChange={(e) => set("budget", e.target.value)} disabled={isLoading} aria-label="Ngân sách VNĐ" aria-invalid={Boolean(formError)} aria-describedby={formError ? "budget-help form-error" : "budget-help"} /><span>VNĐ</span></div>
+            <p id="budget-help" className="recommend-helper">Hệ thống sẽ tìm các cấu hình có giá không vượt quá ngân sách này.</p>
+            {formError && <div id="form-error" role="alert" className="error-banner">{formError}</div>}
           </div>
 
-          {/* 3. TopCount */}
           <div className="form-section">
-            <h3>3. Số lượng gợi ý (tối đa 3)</h3>
-            <div
-              className="option-grid"
-              style={{
-                gridTemplateColumns: "repeat(3, minmax(0, 80px))",
-              }}
-              role="group"
-              aria-label="Số lượng gợi ý"
-            >
+            <div className="recommend-section-heading"><span className="recommend-step">3</span><div><h3>Số lượng gợi ý</h3><p>Bạn muốn xem bao nhiêu cấu hình được xếp hạng?</p></div></div>
+            <div className="option-grid top-options" role="group" aria-label="Số lượng gợi ý">
               {[1, 2, 3].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  aria-pressed={form.topCount === n}
-                  className={
-                    form.topCount === n ? "option selected" : "option"
-                  }
-                  onClick={() => set("topCount", n)}
-                  disabled={isLoading}
-                >
-                  {n}
+                <button key={n} type="button" aria-label={`Top ${n}`} aria-pressed={form.topCount === n} className={form.topCount === n ? "option selected" : "option"} onClick={() => set("topCount", n)} disabled={isLoading}>
+                  Top {n}
+                  {form.topCount === n && <CheckCircle2 size={14} aria-hidden="true" />}
                 </button>
               ))}
             </div>
           </div>
 
-          <Button type="submit" disabled={isLoading} aria-label="Phân tích và gợi ý">
-            {isLoading ? (
-              <>
-                <Loader2 size={17} className="spin-icon" /> Đang phân tích...
-              </>
-            ) : (
-              <>
-                Phân tích &amp; gợi ý <ArrowRight size={17} />
-              </>
-            )}
+          <Button type="submit" className="btn btn-primary recommend-submit" disabled={isLoading} aria-label="Phân tích và gợi ý cấu hình">
+            {isLoading ? <><Loader2 size={18} className="spin-icon" /> Đang phân tích...</> : <><Settings2 size={18} aria-hidden="true" /> Phân tích &amp; gợi ý cấu hình <ArrowRight size={18} aria-hidden="true" /></>}
           </Button>
+          <div className="recommend-summary"><p>Bạn đang chọn: <strong>{form.purpose}</strong> • {form.budget && Number.isFinite(Number(form.budget)) && Number(form.budget) > 0 ? <>tối đa <strong>{Number(form.budget) % 1_000_000 === 0 ? `${Number(form.budget) / 1_000_000} triệu` : formatVnd(Number(form.budget))}</strong></> : "chưa nhập ngân sách"} • <strong>Top {form.topCount}</strong></p></div>
         </form>
 
-        {/* Tip card */}
-        <div className="tip-card">
-          <Gauge size={30} />
-          <h3>Hệ thống DSS hoạt động thế nào?</h3>
-          <p>
-            Ngân sách và mục đích sử dụng được gửi tới hệ thống.
-            Hệ thống lọc các cấu hình phù hợp với ngân sách, dự đoán điểm benchmark theo mục đích sử dụng và xếp hạng theo điểm dự đoán giảm dần.
-          </p>
-          <div className="mini-flow">
-            <span>01</span> Nhu cầu → <span>02</span> Lọc ngân sách →{" "}
-            <span>03</span> Chấm điểm → <span>04</span> Xếp hạng
-          </div>
-        </div>
+        <aside className="recommend-aside" aria-label="Hướng dẫn tư vấn">
+          <RecommendationSummary />
+        </aside>
       </div>
-
       {/* ─── Results area ─── */}
       <p role="status" aria-live="polite" className="request-status">
         {status === "idle" && "Chọn mục đích và nhập ngân sách để bắt đầu tư vấn."}
@@ -377,14 +293,14 @@ export default function Recommendation() {
             minHeight: 200,
             marginTop: 24,
             background: "#fff",
-            border: "1px solid #ece5d6",
+            border: "1px solid #DCE7F3",
             borderRadius: 15,
           }}
         >
           <PackageSearch size={40} />
           <strong>Không có cấu hình phù hợp</strong>
           <span>{result.message}</span>
-          <span style={{ fontSize: 10, color: "#9c9081", marginTop: 4 }}>
+          <span style={{ fontSize: 10, color: "#64748B", marginTop: 4 }}>
             Ngân sách: {formatVnd(result.budget)} · Đủ điều kiện: {result.eligiblePcCount}/{result.totalPcCount} PC
           </span>
           <Button
@@ -404,7 +320,7 @@ export default function Recommendation() {
           <div className="result-top">
             <div>
               <span className="eyebrow">KẾT QUẢ DSS</span>
-              <h2>Cấu hình đề xuất</h2>
+              <h2>Kết quả gợi ý</h2>
               <p>
                 {result.purpose} · Ngân sách {formatVnd(result.budget)} ·{" "}
                 {result.eligiblePcCount}/{result.totalPcCount} PC đủ điều kiện
