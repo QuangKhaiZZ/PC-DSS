@@ -2,7 +2,7 @@
 
 ## Danh mục tư vấn
 
-Cập nhật `data/processed/pc_catalog.csv`. Có thể dùng Excel để nhập nhưng khi xuất phải giữ đúng 11 tên cột và kiểu dữ liệu. CSV dùng UTF-8, dấu phẩy phân cột; ô chứa dấu phẩy hoặc xuống dòng phải được quote.
+Cập nhật `data/processed/pc_catalog.csv`. Có thể dùng Excel để nhập nhưng khi xuất phải giữ đúng 10 tên cột và kiểu dữ liệu. CSV dùng UTF-8, dấu phẩy phân cột; ô chứa dấu phẩy hoặc xuống dòng phải được quote.
 
 | Cột | Quy tắc |
 |---|---|
@@ -14,13 +14,12 @@ Cập nhật `data/processed/pc_catalog.csv`. Có thể dùng Excel để nhập
 | GpuModel | Đúng GPU và VRAM; không đồng nhất bản 6GB/8GB |
 | RamCapacityGb | Tổng dung lượng RAM, GB nguyên dương |
 | SsdCapacityGb | Tổng dung lượng SSD, GB nguyên dương; 1TB = 1000GB |
-| Availability | IN_STOCK, OUT_OF_STOCK hoặc UNKNOWN |
 | SourceUrl | URL HTTP/HTTPS đúng sản phẩm |
 | CheckedAt | Ngày kiểm tra YYYY-MM-DD |
 
 Không điền 0 thay giá hoặc dung lượng chưa biết. Không tự đổi cấu hình rồi giữ giá/link bộ gốc. Không suy Windows bán kèm từ mức độ phổ biến của Windows 11.
 
-Danh mục hiện có 12 PC. Khi mở rộng đến 40–50 bộ, phân bố nhiều khoảng giá, tránh lặp quá nhiều tổ hợp CPU/GPU và ghi nhận tồn kho rõ ràng.
+Danh mục hiện có 10 PC. Khi mở rộng đến 40–50 bộ, phân bố nhiều khoảng giá, tránh lặp quá nhiều tổ hợp CPU/GPU. Link dùng làm nguồn cấu hình và giá; không cần thu thập tồn kho.
 
 ## Reference
 

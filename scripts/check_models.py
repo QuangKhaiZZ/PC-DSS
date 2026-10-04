@@ -167,7 +167,7 @@ for pc in catalog:
              GpuGeneration=int(re.search(r'rtx\s*(\d{2})\d{2}', pc['GpuModel'].lower())[1]),
              IsUltra=int('ultra' in pc['CpuModel'].lower()), IsWindows11=1)
     result = dict(PcId=pc['PcId'], CpuModel=pc['CpuModel'], GpuModel=pc['GpuModel'],
-                  PriceVnd=pc['PriceVnd'], Availability=pc['Availability'],
+                  PriceVnd=pc['PriceVnd'],
                   ScenarioOS='Windows 11 (assumption)', CpuMultiRefId=cpu['ReferenceId'], GpuRefId=gpu['ReferenceId'], **f)
     for name in info:
         outside = [k for k,b in info[name]['training_ranges'].items() if not b['min'] <= f[k] <= b['max']]
@@ -176,7 +176,7 @@ for pc in catalog:
         assert p > 0
         result[name + '_predicted_score'] = p
     pc_results.append(result)
-assert len(pc_results)==12
+assert len(pc_results) == len(catalog) and len(pc_results) > 0
 checks['pc_count'] = len(pc_results)
 checks['pc_extrapolation_ids'] = [r['PcId'] for r in pc_results if r['gaming_range']=='EXTRAPOLATION' or r['rendering_range']=='EXTRAPOLATION']
 checks['distinct_pc_cpu_gpu_pairs'] = len({(r['CpuModel'],r['GpuModel']) for r in pc_results})
@@ -193,25 +193,25 @@ lines=['# Kiểm tra nhanh hai model PC-DSS', '',
        '## Sai số tính lại', '', '| Model / tập dữ liệu | Số mẫu | MAE (điểm) | RMSE (điểm) | MAPE | R² |', '|---|---:|---:|---:|---:|---:|']
 for name,m in metric_results.items():
     lines.append(f"| {name} | {m['n']} | {m['MAE']:.2f} | {m['RMSE']:.2f} | {m['MAPE_pct']:.2f}% | {m['R2']:.4f} |")
-lines += ['', 'Gaming: sai số trên 144 mẫu đã học, không phải test độc lập. Render: 20 mẫu giữ lại theo cách chia hiện có; cross-validation ghi trong model_info chưa được chạy lại trong lượt này.', '',
+lines += ['', f"Gaming: sai số trên {len(datasets['gaming'])} mẫu đã học, không phải test độc lập. Render: {info['rendering']['test_row_count']} mẫu giữ lại theo cách chia hiện có; cross-validation ghi trong model_info chưa được chạy lại trong lượt kiểm tra này.", '',
           '## Những điểm cần lưu ý', '',
-          f"- Render có {len(checks['rendering_overlapping_groups'])} nhóm CPU–GPU trùng giữa train/test, gồm {checks['rendering_test_rows_in_overlapping_groups']} dòng test: {', '.join(checks['rendering_overlapping_groups'])}. Kết quả test chưa hoàn toàn đại diện cho cặp CPU–GPU mới.",
+          f"- Render có {len(checks['rendering_overlapping_groups'])} nhóm CPU–GPU trùng giữa train/test, gồm {checks['rendering_test_rows_in_overlapping_groups']} dòng test: {', '.join(checks['rendering_overlapping_groups'])}. Cách chia gốc theo từng dòng; số nhóm trùng được kiểm tra từ dữ liệu hiện tại.",
           f"- Có {len(checks['rendering_training_notes_mentioning_productivity'])} dòng train render còn ghi Productivity trong ReviewNote dù target khai báo Rendering and Visualization. Script không dùng note làm nhãn; chưa xác minh nguồn web nên chưa thể kết luận cột Score thực sự đúng loại benchmark. Cần đối chiếu nguồn trước khi khẳng định chất lượng nhãn.",
-          '- Hệ số Windows 11 là +4587.05 điểm khi giữ nguyên các biến khác. Đây là quan hệ thống kê của dữ liệu, không phải chứng minh nâng Windows làm máy nhanh thêm từng đó.',
+          f"- Hệ số Windows 11 là {info['rendering']['coefficients']['IsWindows11']:+.2f} điểm khi giữ nguyên các biến khác. Đây là quan hệ thống kê của dữ liệu, không phải chứng minh nâng Windows làm máy nhanh thêm từng đó.",
           '- Gaming dự đoán Time Spy Overall, không phải FPS. Render dự đoán PCMark 10 Rendering and Visualization, không phải thời gian render Blender.', '',
           '## Chạy thử danh mục PC', '',
-          f"- Chạy được {len(pc_results)}/12 bộ, ghép CPU/GPU với reference thành công; điểm trả về hữu hạn và dương. Có {checks['distinct_pc_cpu_gpu_pairs']} cặp CPU–GPU khác nhau.",
+          f"- Chạy được {len(pc_results)}/{len(catalog)} bộ, ghép CPU/GPU với reference thành công; điểm trả về hữu hạn và dương. Có {checks['distinct_pc_cpu_gpu_pairs']} cặp CPU–GPU khác nhau.",
           '- Render dùng giả định Windows 11 cho toàn bộ lượt thử; không ghi đây là OS bán kèm theo shop.',
-          '- PC-008 và PC-011 (RTX 3050 6GB) được đánh dấu ngoại suy: 10741 thấp hơn mức GPU tối thiểu train 12460.',
+          f"- PC ngoài phạm vi train: {', '.join(checks['pc_extrapolation_ids']) or 'không có trong danh mục hiện tại'}. Cờ được tính từ reference và khoảng train của từng model.",
           '- Các bộ cùng CPU/GPU sẽ có cùng điểm dự đoán trong kịch bản này dù giá/RAM/SSD khác nhau: model không dùng RAM/SSD hay giá.',
-          '- Tồn kho chỉ được mang theo để kiểm thử; không lọc bỏ bộ hết hàng và không đề xuất mua trong script này.',
-          '- Không có benchmark thực đo cho 12 PC, nên không tính độ chính xác trên danh mục. IN_RANGE không phải chứng nhận dự đoán đúng.', '',
+          '- Danh mục dùng cấu hình và giá tham khảo để chạy DSS; tồn kho cửa hàng không phải đầu vào hay điều kiện lọc.',
+          f'- Không có benchmark thực đo cho {len(pc_results)} PC, nên không tính độ chính xác trên danh mục. IN_RANGE không phải chứng nhận dự đoán đúng.', '',
           '## Các mẫu lệch nhiều nhất ở tập test render', '', '| RunId | Điểm thật | Dự đoán | Lệch tuyệt đối | Lệch % |', '|---|---:|---:|---:|---:|']
 for r in sorted([r for r in errors if r['Model']=='rendering' and r['Split']=='test'], key=lambda r:r['APE_pct'], reverse=True)[:5]:
     lines.append(f"| {r['RunId']} | {r['ActualScore']:.0f} | {r['PredictedScore']:.0f} | {r['AbsoluteError']:.0f} | {r['APE_pct']:.2f}% |")
 lines += ['', '## Kết luận và cách chạy lại', '',
           'Đạt kiểm tra thực thi và tính nhất quán của file xuất. Backend đã tích hợp hai model và có kiểm thử tương đương C#/Python; xem [kiểm thử API](../backend/tests/README.md). Báo cáo này đo mô hình Python riêng, không thay thế kiểm thử luồng tư vấn. Chưa đủ bằng chứng để tuyên bố chính xác trên cấu hình mới. Ưu tiên đối chiếu nhãn render còn ghi Productivity; sau đó đánh giá gaming độc lập và render chia theo nhóm nếu cần báo cáo khả năng tổng quát hóa.', '',
-          '`python scripts/check_models.py` (numpy 2.1.3, scikit-learn 1.6.1, joblib 1.5.3). Có thể thêm `--deps PATH` để dùng thư viện ở thư mục riêng. Metadata gốc ghi joblib 1.6.0; lượt kiểm tra này dùng 1.5.3, đã nạp và đối chiếu dự đoán thành công.', '',
+          f'`python scripts/check_models.py` hoặc thêm `--deps PATH`. Lượt này dùng numpy {np.__version__}, scikit-learn {sklearn.__version__}, joblib {joblib.__version__}; đã nạp và đối chiếu dự đoán thành công.', '',
           'Chi tiết: [model_check.json](../data/validation/model_check.json), [benchmark_errors.csv](../data/validation/benchmark_errors.csv), [pc_predictions.csv](../data/validation/pc_predictions.csv).']
 if corrections:
     lines[2:2] = [

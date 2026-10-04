@@ -1,6 +1,6 @@
 # Yêu cầu hệ thống PC-DSS
 
-Cập nhật: 02/10/2026. Phạm vi bài tập lớn môn Hệ trợ giúp quyết định.
+Cập nhật: 03/10/2026. Phạm vi bài tập lớn môn Hệ trợ giúp quyết định.
 
 ## Mục tiêu
 
@@ -16,7 +16,7 @@ Gaming dự đoán 3DMark Time Spy Overall; Rendering dự đoán PCMark 10 Rend
 
 ## Dữ liệu
 
-- `data/processed/pc_catalog.csv`: bộ PC, giá, CPU, GPU, RAM, SSD, tình trạng hàng, nguồn và ngày kiểm tra.
+- `data/processed/pc_catalog.csv`: bộ PC, giá, CPU, GPU, RAM, SSD, nguồn và ngày kiểm tra.
 - `data/processed/reference.csv`: điểm CPU Mark và GPU G3D Mark.
 - `models/gaming/model_info.json`, `models/rendering/model_info.json`: hệ số đã học, thứ tự đầu vào, phiên bản và phạm vi train.
 - Excel nguồn, CSV benchmark và notebook được giữ riêng để truy vết, huấn luyện và đánh giá.
@@ -27,14 +27,14 @@ Hiện có 12 PC để kiểm thử. Mục tiêu mở rộng 40–50 bộ với 
 
 1. Xem danh sách và chi tiết PC.
 2. Dự đoán riêng cho một PC theo mục đích.
-3. Nhận ngân sách và mục đích; loại PC vượt ngân sách hoặc hết hàng.
+3. Nhận ngân sách và mục đích; loại PC vượt ngân sách.
 4. Tra reference chính xác sau chuẩn hóa tên; không đổi biến thể CPU/GPU để ghép cho đủ.
 5. Loại phương án thiếu reference hoặc không tạo được đầu vào, kèm lý do.
 6. Tính điểm bằng model tương ứng.
 7. Xếp điểm giảm dần; hòa điểm ưu tiên giá thấp rồi mã PC.
 8. Trả tối đa 3 bộ với cấu hình, giá, ngân sách còn lại, lý do và cảnh báo.
 
-Tồn kho UNKNOWN vẫn được xét kèm cảnh báo. Ngoài khoảng train vẫn được dự đoán và xếp hạng nhưng phải đánh dấu ngoại suy. Không có phương án thì trả danh sách rỗng, không tự nâng ngân sách.
+Tồn kho tại cửa hàng không ảnh hưởng đến lọc, xếp hạng hoặc cảnh báo DSS. Ngoài khoảng train vẫn được dự đoán và xếp hạng nhưng phải đánh dấu ngoại suy. Không có phương án thì trả danh sách rỗng, không tự nâng ngân sách.
 
 Render dùng giả định Windows 11, phải hiển thị rõ; không coi đó là Windows bán kèm. RAM/SSD hiện chỉ mô tả cấu hình, không là đầu vào model hoặc bộ lọc.
 
@@ -56,7 +56,7 @@ Không tự ghép linh kiện, kiểm tra tương thích, CRUD Brand/Category/Pr
 ## Tiêu chí nghiệm thu
 
 - API chạy bằng CSV và metadata, không cần database.
-- Không đề xuất bộ vượt ngân sách hoặc OUT_OF_STOCK.
+- Không đề xuất bộ vượt ngân sách; không loại PC theo tồn kho của cửa hàng.
 - Đúng model, thứ tự xếp hạng, số lượng và cảnh báo.
 - C# tính khớp công thức/model Python đã xuất trên vector kiểm thử.
 - Frontend hiển thị dữ liệu API thật và xử lý trường hợp không có kết quả.

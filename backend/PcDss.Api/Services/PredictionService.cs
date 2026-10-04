@@ -76,14 +76,11 @@ public sealed class PredictionService
             features["GpuGeneration"] = int.Parse(match.Groups[1].Value);
             features["IsUltra"] = pc.CpuModel.Contains("Ultra", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
             features["IsWindows11"] = 1;
-            warnings.Add("Dự đoán theo giả định Windows 11, không xác nhận hệ điều hành bán kèm.");
         }
         var outside = model.FeatureOrder.Where(k =>
             features[k] < model.Ranges[k].Min || features[k] > model.Ranges[k].Max).ToArray();
         if (outside.Length > 0)
             warnings.Add("Ngoại suy ngoài phạm vi train: " + string.Join(", ", outside) + ". Độ chính xác chưa được kiểm chứng.");
-        if (pc.Availability == "UNKNOWN") warnings.Add("Chưa xác nhận tồn kho; cần kiểm tra với cửa hàng.");
-        if (pc.Availability == "OUT_OF_STOCK") warnings.Add("Nguồn báo hết hàng; chỉ tính thử, không đưa vào đề xuất.");
         var c = model.Coefficients;
         var score = purpose == "Gaming"
             ? c["A"] * Math.Pow(gpu.Score, c["b"]) * Math.Pow(cpu.Score, c["c"])

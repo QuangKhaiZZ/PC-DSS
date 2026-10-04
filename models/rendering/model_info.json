@@ -1,17 +1,18 @@
 {
-  "model_version": "rendering-linear-v1-20261001T151656208296Z",
-  "created_at_utc": "2026-10-01T15:16:56.208296+00:00",
+  "model_version": "rendering-linear-v1-20261003T141514136988Z",
+  "created_at_utc": "2026-10-03T14:15:14.136988+00:00",
   "model_type": "Multiple Linear Regression",
   "algorithm": "sklearn.linear_model.LinearRegression",
   "target": "PCMark 10 Rendering and Visualization Score",
   "metric": "RENDER",
-  "fit_scope": "80 training rows only",
-  "training_row_count": 80,
-  "test_row_count": 20,
+  "fit_scope": "104 training rows only",
+  "training_row_count": 104,
+  "test_row_count": 26,
   "split": {
     "method": "train_test_split",
-    "train_size": 80,
-    "test_size": 20,
+    "train_size": 104,
+    "test_size": 26,
+    "test_fraction": 0.2,
     "shuffle": true,
     "random_state": 42
   },
@@ -32,14 +33,14 @@
     "IsWindows11": "Windows 11 = 1; Windows 10 = 0"
   },
   "formula": "RenderingScore = intercept + coefficients['GpuScore'] * GpuScore + coefficients['CpuMultiScore'] * CpuMultiScore + coefficients['IsIntel'] * IsIntel + coefficients['GpuGeneration'] * GpuGeneration + coefficients['IsUltra'] * IsUltra + coefficients['IsWindows11'] * IsWindows11",
-  "intercept": -5200.25235064912,
+  "intercept": -2810.600260628442,
   "coefficients": {
-    "GpuScore": 0.24116842922432638,
-    "CpuMultiScore": 0.13917976916354224,
-    "IsIntel": 2215.7052865756004,
-    "GpuGeneration": 175.93808072318305,
-    "IsUltra": 476.6756522192281,
-    "IsWindows11": 4587.054216920933
+    "GpuScore": 0.27972354798663623,
+    "CpuMultiScore": 0.15575231897928385,
+    "IsIntel": 2630.4540496599284,
+    "GpuGeneration": 97.42091569585611,
+    "IsUltra": 552.5051699648675,
+    "IsWindows11": 3306.143210146982
   },
   "normalization_rules": {
     "cpu": {
@@ -69,7 +70,7 @@
   },
   "training_ranges": {
     "GpuScore": {
-      "min": 12460.0,
+      "min": 10740.0,
       "max": 35623.0
     },
     "CpuMultiScore": {
@@ -95,25 +96,25 @@
   },
   "metrics": {
     "training": {
-      "mae": 1730.154111649948,
-      "rmse": 2541.659809597069,
-      "r2": 0.8021916802929532
+      "mae": 1640.5905894802454,
+      "rmse": 2391.7876631801923,
+      "r2": 0.8226685630023527
     },
     "cross_validation_oof": {
-      "mae": 1939.6304889141145,
-      "rmse": 2831.0523422913175,
-      "r2": 0.7545825108994211
+      "mae": 1754.0251509904458,
+      "rmse": 2533.2699174454506,
+      "r2": 0.8010685618814961
     },
     "test": {
-      "mae": 1771.6894353492753,
-      "rmse": 2157.7441830917055,
-      "r2": 0.8745771836628657
+      "mae": 1726.9326061882962,
+      "rmse": 2006.2400826523024,
+      "r2": 0.8773591877884253
     }
   },
-  "training_cpu_count": 15,
-  "training_gpu_count": 11,
-  "source_excel_name": "Benchmark final.xlsx",
-  "source_excel_sha256": "a5a62d419df5a23ce82f2d28d3d10a3900704e0667380b12e4a008cea414d537",
+  "training_cpu_count": 18,
+  "training_gpu_count": 13,
+  "source_excel_name": "Benchmark finals.xlsx",
+  "source_excel_sha256": "e89cc8ecf41d42ea5ba9ca0a91399669f4b89ef399be398b881820525476c8ca",
   "versions": {
     "sklearn": "1.6.1",
     "numpy": "2.1.3",
@@ -122,8 +123,8 @@
   },
   "limitations": [
     "Training R2 is not independent validation.",
-    "The model was fitted on 80 rows.",
-    "The remaining 20 rows were reserved for testing.",
+    "The model was fitted on 104 rows.",
+    "The remaining 26 rows were reserved for testing.",
     "Benchmark run conditions can vary.",
     "IsIntel, IsUltra and IsWindows11 coefficients represent statistical associations, not causality.",
     "Prediction target is PCMark 10 Rendering and Visualization Score.",
