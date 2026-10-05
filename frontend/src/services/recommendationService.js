@@ -5,14 +5,14 @@ const BASE = (
 /**
  * POST /api/recommendations
  *
- * @param {{ budget: number, purpose: "Gaming"|"Rendering", topCount: number }} params
+ * @param {{ minBudget: number, budget: number, purpose: "Gaming"|"Rendering", topCount: number }} params
  * @throws {Error} với message từ backend hoặc HTTP status khi request thất bại
  */
-export async function getRecommendations({ budget, purpose, topCount }) {
+export async function getRecommendations({ minBudget, budget, purpose, topCount }) {
   const response = await fetch(`${BASE}/api/recommendations`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ budget, purpose, topCount }),
+    body: JSON.stringify({ minBudget, budget, purpose, topCount }),
   });
 
   if (!response.ok) {
@@ -46,7 +46,7 @@ export async function getRecommendations({ budget, purpose, topCount }) {
   // Reject incompatible responses instead of showing a blank result or crashing JSX.
   if (
     !data || !Array.isArray(data.items) || !Array.isArray(data.excluded) ||
-    !Number.isFinite(data.budget) || !["Gaming", "Rendering"].includes(data.purpose) ||
+    !Number.isFinite(data.minBudget) || !Number.isFinite(data.budget) || !["Gaming", "Rendering"].includes(data.purpose) ||
     !Number.isInteger(data.totalPcCount) || !Number.isInteger(data.eligiblePcCount) ||
     ![data.modelVersion, data.target, data.rankingRule, data.message].every(value => typeof value === "string") ||
     !(data.operatingSystemAssumption == null || typeof data.operatingSystemAssumption === "string") ||
@@ -60,8 +60,8 @@ export async function getRecommendations({ budget, purpose, topCount }) {
 
 function validItem({ rank, pc, prediction, budgetRemainingVnd, reason }) {
   return Number.isInteger(rank) && pc && prediction &&
-    [pc.pcId, pc.productName, pc.store, pc.cpuModel, pc.gpuModel,
-      pc.availability, pc.checkedAt, pc.sourceUrl, prediction.target, reason].every(value => typeof value === "string") &&
+    [pc.productName, pc.store, pc.cpuModel, pc.gpuModel,
+    pc.checkedAt, pc.sourceUrl, prediction.target, reason].every(value => typeof value === "string") &&
     [pc.priceVnd, pc.ramCapacityGb, pc.ssdCapacityGb, prediction.predictedScore, budgetRemainingVnd].every(Number.isFinite) &&
     typeof prediction.isExtrapolation === "boolean" &&
     Array.isArray(prediction.warnings) && prediction.warnings.every(value => typeof value === "string");

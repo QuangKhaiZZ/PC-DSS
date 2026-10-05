@@ -4,7 +4,7 @@ import { ArrowRight, ShieldCheck, Wallet, ListOrdered, Cpu, SlidersHorizontal, C
 
 const steps = [
   { title: "Nhu cầu", heading: "Chọn nhu cầu", icon: SlidersHorizontal, text: "Chọn Gaming hoặc Rendering theo công việc của bạn." },
-  { title: "Ngân sách", heading: "Thiết lập ngân sách", icon: Wallet, text: "Nhập ngân sách để lọc các bộ PC phù hợp." },
+  { title: "Ngân sách", heading: "Chọn khoảng giá", icon: Wallet, text: "Chọn khoảng giá để lọc các bộ PC phù hợp." },
   { title: "Dự đoán", heading: "Dự đoán hiệu năng", icon: ChartNoAxesColumnIncreasing, text: "Dự đoán điểm benchmark theo mục đích sử dụng." },
   { title: "Xếp hạng", heading: "Xếp hạng kết quả", icon: ListOrdered, text: "So sánh các cấu hình theo điểm dự đoán giảm dần." },
 ];
@@ -39,7 +39,6 @@ export default function Home() {
           <p>PC DSS giúp bạn tìm kiếm cấu hình máy tính phù hợp dựa trên nhu cầu sử dụng, ngân sách và điểm hiệu năng dự đoán theo benchmark.</p>
           <div className="home-hero-actions">
             <Link to="/recommendation" className="btn btn-primary home-cta">Bắt đầu tư vấn <ArrowRight size={18} aria-hidden="true" /></Link>
-            <a href="#home-process" className="home-secondary-cta">Tìm hiểu thêm</a>
           </div>
         </div>
 

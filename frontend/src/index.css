@@ -112,14 +112,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline:3px solid #
 .purpose-options strong { display:block;font-size:13px;color:var(--text); }
 .purpose-options small { display:block;font-size:10px;font-weight:400;margin-top:5px;color:#58709d;line-height:1.5; }
 .selection-check { margin-left:auto; }
-.budget-presets { display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-bottom:11px; }
-.budget-presets .option { padding:10px 2px;white-space:nowrap;font-size:10px; }
-.recommend-budget-label { display:block;font-size:10px;color:var(--text-muted);margin-bottom:5px; }
-.recommend-budget-input { position:relative; }
-.recommend-budget-input input { width:100%;border:1px solid var(--border);border-radius:7px;padding:11px 52px 11px 14px;background:#fff;color:var(--text);outline:0;font-size:13px; }
-.recommend-budget-input input:focus { border-color:var(--primary);box-shadow:0 0 0 3px #2563eb12; }
-.recommend-budget-input > span { position:absolute;right:8px;top:8px;padding:5px 7px;background:#f1f5f9;border-radius:5px;font-size:10px;color:#58709d; }
-.recommend-helper { font-size:10px;color:var(--text-muted);line-height:1.6;margin:7px 0 0; }
+.price-range-options { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+.price-range-options .option { min-height:43px;padding:10px 8px;font-size:12px;line-height:1.5; }
+.price-range-options .option:last-child { grid-column:1 / -1; }
 .top-options { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .top-options .option { display:flex;align-items:center;justify-content:center;gap:8px; }
 .recommend-submit { width:100%;font-size:14px; }
@@ -216,8 +211,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline:3px solid #
   .form-card,.recommend-preview { padding:17px; }
   .purpose-options .option { gap:8px; }
   .purpose-options .option > svg { width:22px; }
-  .budget-presets { gap:4px; }
-  .budget-presets .option { font-size:9px; }
   .ranked-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:1050px) {
@@ -263,8 +256,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline:3px solid #
   .home-step-connector { display:none; }
   .home-purpose-image { height:180px; }
   .home-section-heading h2 { font-size:21px; }
-  .budget-presets { grid-template-columns:repeat(4,minmax(0,1fr));gap:7px; }
-  .budget-presets .option { font-size:11px; }
+  .price-range-options { grid-template-columns:1fr; }
   .form-card,.recommend-preview { padding:14px; }
   .recommend-section-heading { gap:11px; }
   .result-top { align-items:flex-start;flex-direction:column; }
