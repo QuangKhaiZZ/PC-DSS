@@ -41,13 +41,15 @@ Gaming final fit trên toàn bộ 158 mẫu; CSV Gaming không có tập test đ
 ## Danh mục PC để test — cập nhật 04/10/2026
 
 - [Bản Excel catalog](../outputs/catalog-update-20261004/pc_catalog.xlsx): bản xem/chỉnh sửa cục bộ; backend đọc CSV bên dưới.
-- [processed/pc_catalog.csv](processed/pc_catalog.csv): 36 PC, giữ 10 cột cần thiết, UTF-8 BOM; sắp theo giá tăng dần.
+- [processed/pc_catalog.csv](processed/pc_catalog.csv): 36 PC, 11 cột (bổ sung `ImageUrl` ngày 07/10/2026), UTF-8 BOM; sắp theo giá tăng dần.
 - [raw/PC_source_links.xlsx](raw/PC_source_links.xlsx): bản sao file nguồn nguyên vẹn.
 - [raw/pc_source_review.json](raw/pc_source_review.json): kết quả rà soát 30 link. `catalog_review_details` lưu các thông tin kiểm tra đã tách khỏi bảng PC chính, nối bằng `PcId`; đây là snapshot tại ngày kiểm tra, không phải đầu vào model tự cập nhật.
 
-### 10 cột của bảng PC
+### 11 cột của bảng PC
 
-`PcId`, `ProductName`, `Store`, `PriceVnd`, `CpuModel`, `GpuModel`, `RamCapacityGb`, `SsdCapacityGb`, `SourceUrl`, `CheckedAt`.
+`PcId`, `ProductName`, `Store`, `PriceVnd`, `CpuModel`, `GpuModel`, `RamCapacityGb`, `SsdCapacityGb`, `SourceUrl`, `CheckedAt`, `ImageUrl`.
+
+`ImageUrl` là đường dẫn ảnh trên backend, ví dụ `/images/pcs/PC-016.jpg`. File tương ứng nằm trong `backend/PcDss.Api/wwwroot/images/pcs/`; giữ đuôi đúng định dạng ảnh thực tế. Backend trả `imageUrl` trong thông tin PC, frontend ghép với `VITE_API_BASE_URL`. CSV cũ thiếu cột này vẫn đọc được và giao diện hiện khung chưa có ảnh. Sau khi đổi CSV hoặc ảnh, build và khởi động lại backend để cập nhật dữ liệu và file tĩnh được đóng gói.
 
 Giá tính VND/thùng máy, không gồm màn hình. RAM/SSD tính GB; 1TB SSD = 1000GB. Giữ đúng cấu hình gốc theo shop, không chỉnh linh kiện rồi dùng lại giá cũ. Nếu cần bộ giả lập để kiểm thử, lưu riêng và đánh dấu rõ. Các nguồn không chỉ có GEARVN.
 

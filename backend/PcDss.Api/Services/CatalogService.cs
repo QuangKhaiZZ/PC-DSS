@@ -18,7 +18,9 @@ public sealed class CatalogService
                 CsvTable.Required(row, "CpuModel"), CsvTable.Required(row, "GpuModel"),
                 checked((int)CsvTable.PositiveInteger(row, "RamCapacityGb")),
                 checked((int)CsvTable.PositiveInteger(row, "SsdCapacityGb")),
-                CsvTable.Url(row, "SourceUrl"), CsvTable.Date(row, "CheckedAt"));
+                CsvTable.Url(row, "SourceUrl"), CsvTable.Date(row, "CheckedAt"),
+                row.TryGetValue("ImageUrl", out var imageUrl) && !string.IsNullOrWhiteSpace(imageUrl)
+                    ? imageUrl : null);
         }).OrderBy(x => x.PriceVnd).ThenBy(x => x.PcId, StringComparer.Ordinal).ToArray();
         if (items.Select(x => x.PcId).Distinct(StringComparer.OrdinalIgnoreCase).Count() != items.Length)
             throw new InvalidDataException("Trùng PcId trong pc_catalog.csv");

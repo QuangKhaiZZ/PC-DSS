@@ -2,7 +2,7 @@
 
 ## Danh mục tư vấn
 
-Cập nhật `data/processed/pc_catalog.csv`. Có thể dùng Excel để nhập nhưng khi xuất phải giữ đúng 10 tên cột và kiểu dữ liệu. CSV dùng UTF-8, dấu phẩy phân cột; ô chứa dấu phẩy hoặc xuống dòng phải được quote.
+Cập nhật `data/processed/pc_catalog.csv`. Có thể dùng Excel để nhập nhưng khi xuất phải giữ 10 cột dữ liệu gốc và cột `ImageUrl` bổ sung cho ảnh sản phẩm. `ImageUrl` dùng đường dẫn như `/images/pcs/PC-016.jpg`, tương ứng file trong `backend/PcDss.Api/wwwroot/images/pcs/`. CSV dùng UTF-8, dấu phẩy phân cột; ô chứa dấu phẩy hoặc xuống dòng phải được quote.
 
 | Cột | Quy tắc |
 |---|---|

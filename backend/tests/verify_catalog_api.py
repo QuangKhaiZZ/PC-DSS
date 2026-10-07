@@ -107,6 +107,21 @@ def main():
             status, catalog = request(base, '/api/pc-catalog')
             expect(status == 200 and len(catalog) == len(original), 'Catalog count')
             expect({r['pcId'] for r in catalog} == {r['PcId'] for r in original}, 'Catalog IDs must match current CSV')
+            original_by_id = {r['PcId']: r for r in original}
+            for pc in catalog:
+                image_url = original_by_id[pc['pcId']].get('ImageUrl')
+                expect(pc.get('imageUrl') == (image_url or None), 'Image URL must match CSV')
+                if image_url:
+                    with opener.open(base + image_url, timeout=10) as response:
+                        content = response.read()
+                        mime = response.headers.get_content_type()
+                        expect(response.status == 200, 'Image must be served')
+                        signature_matches = (
+                            mime == 'image/png' and content.startswith(b'\x89PNG\r\n\x1a\n') or
+                            mime == 'image/jpeg' and content.startswith(b'\xff\xd8\xff') or
+                            mime == 'image/webp' and content[:4] == b'RIFF' and content[8:12] == b'WEBP'
+                        )
+                        expect(signature_matches, 'Image content must match its MIME type')
             expect(all('availability' not in r for r in catalog), 'Stock field must not be part of DSS API')
             expect([r['priceVnd'] for r in catalog] == sorted(r['priceVnd'] for r in catalog), 'Catalog order')
             expect(request(base, '/api/pc-catalog/not-found')[0] == 404, 'Unknown PC')
