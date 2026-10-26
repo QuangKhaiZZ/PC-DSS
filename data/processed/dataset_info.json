@@ -6,17 +6,31 @@
   "backup_archive": "outputs/model-update-20261003T141928Z/before-update.zip",
   "models": {
     "gaming": {
-      "file": "gaming_final_20261003T072837179133Z.zip",
-      "sha256": "c8e3aad09c2d978c3edfb5a645efe636d6b71f62fb17d91831ff578ccd08ecc8",
-      "version": "gaming-log-v1-20261003T072837179133Z",
+      "file": "gaming_final_20261012T164839924602Z.zip",
+      "sha256": "a42fdbb0fb32ccfb01ac7bed33d75450e5ea5e8401f011233503d1918b647ccb",
+      "version": "gaming-log-v1-20261012T164839924602Z",
       "features": [
         "GpuScore",
         "CpuMultiScore"
       ],
       "rows": 158,
       "fit_scope": "All accepted eligible rows",
-      "training_source_sha256": "e010ec6ea0af90398b3e444140d3eea43f68fc9ee9384953cc44a70c644f9a46",
-      "training_source_filename": "Benchmark final - bo sung 14400F.xlsx"
+      "training_source_sha256": "e89cc8ecf41d42ea5ba9ca0a91399669f4b89ef399be398b881820525476c8ca",
+      "training_source_filename": "Benchmark final.xlsx",
+      "notebook": "notebooks/gamingtrain.ipynb",
+      "separate_evaluation": {
+        "method": "GroupShuffleSplit",
+        "random_state": 42,
+        "train_rows": 125,
+        "test_rows": 33,
+        "train_groups": 110,
+        "test_groups": 28,
+        "group_overlap_count": 0,
+        "new_external_validation": false
+      },
+      "updated_at_utc": "2026-10-12T16:53:01.138439+00:00",
+      "previous_version": "gaming-log-v1-20261003T072837179133Z",
+      "update_backup_archive": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pc-dss-gaming-before-update-desf7p2d\\before-update.zip"
     },
     "rendering": {
       "file": "rendering_model_20261003T141514136988Z.zip",
@@ -66,7 +80,7 @@
     "reference.csv": "f1409e976133e31391d318a1f369d1ed85551d3b1c9d80ef748e8167eca04794",
     "pc_catalog.csv": "a075e3d9b4af36b23e975b23b5ff8561f511c23413e0c242ad646997fafb77f9"
   },
-  "source_note": "Raw workbook is the exact rendering training input. Gaming records and shared reference values match its export; gaming training workbook bytes have a different recorded hash, preserved in model metadata.",
+  "source_note": "Raw workbook matches the latest Gaming and Rendering training inputs. Gaming deployment still fits all 158 rows; grouped holdout evaluation is stored separately in models/gaming/03-Đánh-giá-train-test/evaluation_*.",
   "catalog_update": {
     "checked_at": "2026-10-04",
     "pc_count": 36,

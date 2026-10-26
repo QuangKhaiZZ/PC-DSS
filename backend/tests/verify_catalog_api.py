@@ -89,7 +89,10 @@ def fixture(work):
         shutil.copy2(ROOT / 'data/processed' / name, data / name)
     for purpose in ['gaming', 'rendering']:
         (data / purpose).mkdir()
-        shutil.copy2(ROOT / 'models' / purpose / 'model_info.json', data / purpose / 'model_info.json')
+        source_dir = ROOT / 'models' / purpose
+        if purpose == 'gaming':
+            source_dir /= '01-Mô-hình-triển-khai'
+        shutil.copy2(source_dir / 'model_info.json', data / purpose / 'model_info.json')
     return data
 
 def close_score(actual, expected):
@@ -194,7 +197,7 @@ def main():
             server.close()
 
         # Exercise exported Python test vectors using temporary catalog entries.
-        vectors = read_csv(ROOT / 'models/gaming/backend_test_vectors.csv')
+        vectors = read_csv(ROOT / 'models/gaming/04-Kiểm-tra-mô-hình/backend_test_vectors.csv')
         render_vectors = read_csv(ROOT / 'models/rendering/test_predictions.csv')
         rows = []
         for i, v in enumerate(vectors + render_vectors):

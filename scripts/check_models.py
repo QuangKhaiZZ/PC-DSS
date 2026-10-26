@@ -53,8 +53,17 @@ def metrics(actual, predicted):
 
 files = [p for p in (ROOT / 'models').rglob('*') if p.is_file()]
 before = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-info = {name: json.loads((ROOT / f'models/{name}/model_info.json').read_text(encoding='utf-8')) for name in ['gaming', 'rendering']}
-models = {name: joblib.load(ROOT / f'models/{name}/model.joblib') for name in info}
+def model_file(name, filename):
+    directory = ROOT / 'models' / name
+    if name == 'gaming':
+        folder = ('01-Mô-hình-triển-khai' if filename in ['model_info.json', 'model.joblib']
+                  else '02-Dữ-liệu-đi-kèm' if filename == 'data_used.csv'
+                  else '04-Kiểm-tra-mô-hình')
+        directory /= folder
+    return directory / filename
+
+info = {name: json.loads(model_file(name, 'model_info.json').read_text(encoding='utf-8')) for name in ['gaming', 'rendering']}
+models = {name: joblib.load(model_file(name, 'model.joblib')) for name in info}
 
 def predict(name, rows):
     keys = info[name]['feature_order']
@@ -81,7 +90,7 @@ datasets = {name: read_csv(ROOT / f'data/processed/{name}_dataset.csv') for name
 checks, metric_results, errors = {}, {}, []
 for name, rows in datasets.items():
     assert len({r['RunId'] for r in rows}) == len(rows), 'Duplicate RunId'
-    saved_rows = read_csv(ROOT / f'models/{name}/data_used.csv')
+    saved_rows = read_csv(model_file(name, 'data_used.csv'))
     actual_train = rows if name == 'gaming' else [r for r in rows if r['Split'] == 'train']
     assert {r['RunId'] for r in actual_train} == {r['RunId'] for r in saved_rows}
     saved_by_id = {r['RunId']: r for r in saved_rows}
@@ -109,7 +118,7 @@ for name, rows in datasets.items():
             errors.append(dict(Model=name, Split=split, RunId=r['RunId'], MachineGroupId=r['MachineGroupId'],
                                ActualScore=actual, PredictedScore=float(p), Error=float(p-actual),
                                AbsoluteError=float(abs(p-actual)), APE_pct=float(abs(p-actual)/actual*100)))
-    saved = read_csv(ROOT / f'models/{name}/' / ('training_predictions.csv' if name == 'gaming' else 'test_predictions.csv'))
+    saved = read_csv(model_file(name, 'training_predictions.csv' if name == 'gaming' else 'test_predictions.csv'))
     current_by_id = {r['RunId']: r for r in rows}
     expected_ids = {r['RunId'] for r in rows if name == 'gaming' or r['Split'] == 'test'}
     assert {r['RunId'] for r in saved} == expected_ids
@@ -122,7 +131,7 @@ for name, rows in datasets.items():
     assert delta < 1e-7
     checks[name + '_saved_predictions_max_delta'] = delta
 
-vectors = read_csv(ROOT / 'models/gaming/backend_test_vectors.csv')
+vectors = read_csv(ROOT / 'models/gaming/04-Kiểm-tra-mô-hình/backend_test_vectors.csv')
 checks['gaming_test_vectors_count'] = len(vectors)
 assert np.allclose(predict('gaming', vectors), [float(r['ExpectedScore']) for r in vectors], rtol=1e-10, atol=1e-7)
 train_groups = {r['MachineGroupId'] for r in datasets['rendering'] if r['Split']=='train'}

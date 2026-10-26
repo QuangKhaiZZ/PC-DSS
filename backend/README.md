@@ -32,7 +32,7 @@ Kết quả có `items`, lý do xếp hạng, số tiền còn lại, phiên b�
 
 - Sửa/thêm PC tại `data/processed/pc_catalog.csv`, dùng `PcId` duy nhất.
 - `data/processed/reference.csv` cung cấp CPU Mark/G3D Mark. CPU/GPU phải khớp reference sau chuẩn hóa chữ hoa/thường, dấu phân cách, từ NVIDIA/Processor và hậu tố @x GHz; giữ hậu tố F/K/KF và VRAM. Không tự đổi 3050 6GB thành 8GB.
-- `models/gaming/model_info.json`, `models/rendering/model_info.json` cung cấp đúng hệ số đã học, phiên bản và phạm vi train. C# tính công thức được hỗ trợ; không tự đọc file joblib hoặc tự train. Đổi loại thuật toán cần cập nhật code và kiểm thử, không chỉ đổi JSON.
+- `models/gaming/01-Mô-hình-triển-khai/model_info.json`, `models/rendering/model_info.json` cung cấp đúng hệ số đã học, phiên bản và phạm vi train. C# tính công thức được hỗ trợ; không tự đọc file joblib hoặc tự train. Đổi loại thuật toán cần cập nhật code và kiểm thử, không chỉ đổi JSON.
 - API chỉ đọc; chưa có API thêm/sửa/xóa CSV. Dừng và chạy lại bằng lệnh `dotnet run` (không dùng `--no-build`) sau khi sửa dữ liệu để sao chép file mới và nạp lại.
 - CSV UTF-8/BOM, có thể có dấu phẩy và xuống dòng trong ô được quote. Tên cột bắt buộc đúng schema. Lỗi cấu trúc, trùng ID, giá không hợp lệ hoặc metadata model sai làm startup thất bại với lỗi cụ thể, không âm thầm mất dòng.
 - Thiếu reference của một PC: vẫn xem được cấu hình; API dự đoán riêng trả 422; API tư vấn bỏ bộ đó và trả lý do.
@@ -48,10 +48,10 @@ Build/publish tự đóng gói 4 file vào `DssData` cạnh DLL. Không phụ th
 
 Render luôn dùng kịch bản Windows 11, không khẳng định Windows bán kèm. Ngoài min/max train vẫn được tính và xếp hạng kèm `isExtrapolation=true`; không coi IN_RANGE là đảm bảo chính xác. RTX 3050 6GB đã nằm trong phạm vi train của hai model cập nhật ngày 03/10/2026. Dự đoán là điểm benchmark, không phải FPS hoặc số giây render. Giá theo shop và thời điểm CheckedAt, chưa đồng nhất VAT.
 
-## Kiểm thử và chuyển đổi
+## Kiểm thử
 
-Xem [tests/README.md](tests/README.md). Các test CRUD/MySQL cũ được thay bằng test API CSV, lọc/xếp hạng và đối chiếu mô hình. Cơ sở dữ liệu MySQL cũ và credentials trên máy không bị xóa; backend không còn đọc chúng.
+Xem [tests/README.md](tests/README.md) để kiểm tra API CSV, lọc ngân sách, xếp hạng và đối chiếu dự đoán với mô hình đã lưu.
 
-Frontend vẫn còn menu/API cũ và kết quả minh họa. Chưa dùng giao diện đó để đánh giá backend DSS mới; dùng file HTTP hoặc Postman. Bước tích hợp giao diện là công việc tiếp theo.
+Frontend đã tích hợp API tư vấn. Xem [hướng dẫn chạy toàn bộ demo](../README.md), mở giao diện tại http://localhost:5173 và giữ backend chạy tại http://localhost:5170.
 
 API hỗ trợ khoảng giá qua `minBudget` và `budget`, đều nguyên VND, `0 <= minBudget <= budget`. Ví dụ 10 đến dưới 15 triệu: `{"minBudget":10000000,"budget":14999999,"purpose":"Gaming"}`. Windows 11 vẫn là kịch bản model; không trả cảnh báo OS trong `warnings`. Giữ cảnh báo ngoại suy.

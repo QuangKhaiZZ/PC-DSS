@@ -5,8 +5,8 @@ React + Vite, tư vấn cấu hình từ API ASP.NET Core.
 ## Chạy và build
 
 ```bash
-npm install
-npm run dev
+npm ci
+npm run dev -- --host localhost --port 5173 --strictPort
 npm run build
 ```
 
@@ -47,12 +47,12 @@ Không có trang/service Categories hoặc Brands vì backend không cung cấp 
 
 ## Kiểm tra UI
 
-Form có nhãn `Nhu cầu cấu hình PC`, input `Ngân sách VNĐ`, nhóm nút
-`Mục đích sử dụng` và `Số lượng gợi ý`, nút `Phân tích và gợi ý`.
+Form có nhãn `Nhu cầu cấu hình PC`, nhóm lựa chọn `Khoảng giá`, nhóm nút
+`Mục đích sử dụng` và `Số lượng gợi ý`, nút `Phân tích và gợi ý cấu hình`.
 Nút lựa chọn có `aria-pressed`; thông báo tiến trình có `role="status"`,
 lỗi có `role="alert"`, mỗi cấu hình là một `article` có tên theo hạng/sản phẩm.
 
 Các luồng cần kiểm tra: idle, loading (khóa form), success-empty, success,
-validation, lỗi mạng/HTTP/JSON và gửi lại sau lỗi. Budget trống, 0, âm, số lẻ
+validation, lỗi mạng/HTTP/JSON và gửi lại sau lỗi. Chưa chọn khoảng giá thì form không gửi request. API từ chối budget 0, âm, số lẻ
 hoặc vượt giới hạn không được gửi request. Kiểm tra cả Gaming và Rendering,
 TopCount 1–3, cảnh báo và danh sách PC bị loại với response thực từ backend.

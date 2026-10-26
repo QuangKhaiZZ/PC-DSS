@@ -1,0 +1,52 @@
+{
+  "scope": "Retrospective grouped holdout evaluation on existing data",
+  "new_external_validation": false,
+  "method": "GroupShuffleSplit",
+  "group_definition": "Normalized CpuKey + GpuKey; not physical machine ID",
+  "random_state": 42,
+  "test_group_fraction": 0.2,
+  "train_row_count": 125,
+  "test_row_count": 33,
+  "train_group_count": 110,
+  "test_group_count": 28,
+  "group_overlap_count": 0,
+  "feature_order": [
+    "GpuScore",
+    "CpuMultiScore"
+  ],
+  "target": "3DMark Time Spy Overall",
+  "source_excel_name": "Benchmark final.xlsx",
+  "source_excel_sha256": "e89cc8ecf41d42ea5ba9ca0a91399669f4b89ef399be398b881820525476c8ca",
+  "evaluation_model_coefficients": {
+    "A": 0.00667600186635333,
+    "b": 1.2388472514056508,
+    "c": 0.2148282086295689
+  },
+  "baseline_train_mean": 18185.976,
+  "metrics": [
+    {
+      "Phạm vi đánh giá": "Gaming — tập train",
+      "Số mẫu": 125,
+      "MAE": 1496.5090128680342,
+      "RMSE": 1915.8922339573583,
+      "R²": 0.9319968135973747
+    },
+    {
+      "Phạm vi đánh giá": "Gaming — tập test",
+      "Số mẫu": 33,
+      "MAE": 1324.1778789348639,
+      "RMSE": 1781.294489477946,
+      "R²": 0.9293417139789805
+    },
+    {
+      "Phạm vi đánh giá": "Trung bình train — đánh giá trên test",
+      "Số mẫu": 33,
+      "MAE": 5181.026666666667,
+      "RMSE": 6817.229212257336,
+      "R²": -0.03492157850401356
+    }
+  ],
+  "metrics_file": "evaluation_metrics.csv",
+  "predictions_file": "evaluation_test_predictions.csv",
+  "split_file": "evaluation_split.csv"
+}

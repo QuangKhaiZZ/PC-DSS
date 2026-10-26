@@ -29,7 +29,7 @@ Notebook trong [notebooks/](../notebooks/) hiện đọc trực tiếp Excel tr�
 
 Khi sửa dữ liệu nguồn, xuất lại CSV và cập nhật thông tin phiên bản; không sửa trực tiếp điểm trong CSV rồi coi đó là dữ liệu gốc. Giữ dấu vết của bản dữ liệu và mô hình cũ khi tạo phiên bản mới.
 
-Gaming final fit trên toàn bộ 158 mẫu; CSV Gaming không có tập test độc lập. Với Render, dùng `Split=train` để fit và `Split=test` để đánh giá. CSV đã sắp theo RunId, nên không chia ngẫu nhiên lại theo vị trí rồi kỳ vọng giữ đúng tập test cũ.
+Gaming final fit trên toàn bộ 158 mẫu; CSV Gaming không chứa cột chia tập. Gói Gaming ngày 12/10/2026 bổ sung đánh giá riêng theo nhóm CPU–GPU: 125 mẫu train và 33 mẫu test; cách chia nằm trong `models/gaming/03-Đánh-giá-train-test/evaluation_split.csv`. Mô hình đánh giá chỉ học train, còn mô hình triển khai học lại toàn bộ dữ liệu và giữ nguyên hệ số. Đây là đánh giá lại dữ liệu hiện có, không phải benchmark mới độc lập. Với Render, dùng `Split=train` để fit và `Split=test` để đánh giá. CSV đã sắp theo RunId, nên không chia ngẫu nhiên lại theo vị trí rồi kỳ vọng giữ đúng tập test cũ.
 
 ## Giới hạn hiện tại
 
@@ -40,7 +40,6 @@ Gaming final fit trên toàn bộ 158 mẫu; CSV Gaming không có tập test đ
 
 ## Danh mục PC để test — cập nhật 04/10/2026
 
-- [Bản Excel catalog](../outputs/catalog-update-20261004/pc_catalog.xlsx): bản xem/chỉnh sửa cục bộ; backend đọc CSV bên dưới.
 - [processed/pc_catalog.csv](processed/pc_catalog.csv): 36 PC, 11 cột (bổ sung `ImageUrl` ngày 07/10/2026), UTF-8 BOM; sắp theo giá tăng dần.
 - [raw/PC_source_links.xlsx](raw/PC_source_links.xlsx): bản sao file nguồn nguyên vẹn.
 - [raw/pc_source_review.json](raw/pc_source_review.json): kết quả rà soát 30 link. `catalog_review_details` lưu các thông tin kiểm tra đã tách khỏi bảng PC chính, nối bằng `PcId`; đây là snapshot tại ngày kiểm tra, không phải đầu vào model tự cập nhật.

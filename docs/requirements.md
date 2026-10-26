@@ -1,6 +1,6 @@
 # Yêu cầu hệ thống PC-DSS
 
-Cập nhật: 03/10/2026. Phạm vi bài tập lớn môn Hệ trợ giúp quyết định.
+Cập nhật: 26/10/2026. Phạm vi bài tập lớn môn Hệ trợ giúp quyết định.
 
 ## Mục tiêu
 
@@ -18,10 +18,10 @@ Gaming dự đoán 3DMark Time Spy Overall; Rendering dự đoán PCMark 10 Rend
 
 - `data/processed/pc_catalog.csv`: bộ PC, giá, CPU, GPU, RAM, SSD, nguồn và ngày kiểm tra.
 - `data/processed/reference.csv`: điểm CPU Mark và GPU G3D Mark.
-- `models/gaming/model_info.json`, `models/rendering/model_info.json`: hệ số đã học, thứ tự đầu vào, phiên bản và phạm vi train.
+- `models/gaming/01-Mô-hình-triển-khai/model_info.json`, `models/rendering/model_info.json`: hệ số đã học, thứ tự đầu vào, phiên bản và phạm vi train.
 - Excel nguồn, CSV benchmark và notebook được giữ riêng để truy vết, huấn luyện và đánh giá.
 
-Hiện có 12 PC để kiểm thử. Mục tiêu mở rộng 40–50 bộ với nhiều khoảng giá và tổ hợp CPU/GPU; đây là kế hoạch dữ liệu, chưa phải số lượng đã có. Tăng số PC tư vấn không tự tăng độ chính xác model.
+Hiện có 36 PC để kiểm thử, phân bố trên nhiều khoảng giá và tổ hợp CPU/GPU. Tăng số PC tư vấn không tự tăng độ chính xác model.
 
 ## Chức năng
 
@@ -36,18 +36,18 @@ Hiện có 12 PC để kiểm thử. Mục tiêu mở rộng 40–50 bộ với 
 
 Tồn kho tại cửa hàng không ảnh hưởng đến lọc, xếp hạng hoặc cảnh báo DSS. Ngoài khoảng train vẫn được dự đoán và xếp hạng nhưng phải đánh dấu ngoại suy. Không có phương án thì trả danh sách rỗng, không tự nâng ngân sách.
 
-Render dùng giả định Windows 11, phải hiển thị rõ; không coi đó là Windows bán kèm. RAM/SSD hiện chỉ mô tả cấu hình, không là đầu vào model hoặc bộ lọc.
+Render dùng giả định Windows 11 và trả rõ giả định trong API; không coi đó là Windows bán kèm. RAM/SSD hiện chỉ mô tả cấu hình, không là đầu vào model hoặc bộ lọc.
 
-## Giao diện cần tích hợp
+## Giao diện đã tích hợp
 
-- Form ngân sách và Gaming/Rendering; trạng thái đang tải và lỗi nhập liệu/kết nối.
+- Form chọn khoảng giá và Gaming/Rendering; trạng thái đang tải và lỗi nhập liệu/kết nối.
 - Kết quả theo thứ hạng API, kèm giải thích, điểm benchmark dự đoán và cảnh báo.
 - So sánh cấu hình, giá và điểm của các phương án cùng mục đích.
 - Link nguồn sản phẩm và ngày kiểm tra.
-- Ảnh chưa bắt buộc; ảnh chung phải ghi là minh họa. Catalog hiện không có ImageUrl.
+- Ảnh sản phẩm từ trường `ImageUrl` trong catalog, phục vụ qua backend; hiển thị khung thay thế nếu không có ảnh hoặc tải ảnh thất bại.
 - Không có phương án phù hợp phải được trình bày rõ.
 
-Frontend hiện chưa nối luồng tư vấn mới. Hợp đồng API nằm trong [hướng dẫn frontend](frontend-integration.md).
+Frontend đã gọi API tư vấn và hiển thị kết quả thực. Hợp đồng API nằm trong [hướng dẫn frontend](../frontend/README.md).
 
 ## Phạm vi không triển khai
 
